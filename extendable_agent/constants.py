@@ -10,4 +10,5 @@ PAGES = [
 ]
 FUNCTIONS_DIR = "./functions"
 GITHUB_REPO = "AI-Colleagues/tools-hub"
+GITHUB_DIR = "tools"
 GITHUB_TOKEN = os.getenv("TOOLS_HUB_TOKEN", "")

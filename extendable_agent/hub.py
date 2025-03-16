@@ -2,6 +2,7 @@
 
 from github import Github
 from github.ContentFile import ContentFile
+from extendable_agent.constants import GITHUB_DIR
 from extendable_agent.constants import GITHUB_REPO
 from extendable_agent.constants import GITHUB_TOKEN
 
@@ -20,8 +21,9 @@ def upload_to_github(file_name: str, content: str) -> bool:
     repo = g.get_repo(GITHUB_REPO)
 
     # Check if the file already exists in the repository
+    full_path = f"{GITHUB_DIR}/{file_name}"
     try:
-        existing_file = repo.get_contents(file_name)
+        existing_file = repo.get_contents(full_path)
         assert existing_file and isinstance(existing_file, ContentFile)
         # If it exists, update the file
         repo.update_file(
@@ -33,5 +35,5 @@ def upload_to_github(file_name: str, content: str) -> bool:
         return True
     except Exception:
         # If it doesn't exist, create a new file
-        repo.create_file(path=file_name, message=f"Add {file_name}", content=content)
+        repo.create_file(path=full_path, message=f"Add {file_name}", content=content)
         return True
