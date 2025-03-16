@@ -4,16 +4,8 @@ import os
 import streamlit as st
 from code_editor import code_editor
 from extendable_agent.constants import FUNCTIONS_DIR
+from extendable_agent.tools import get_function_code
 from extendable_agent.tools import load_code_as_module
-
-
-def get_function_code(function_name: str) -> str:
-    """Get function code."""
-    try:
-        with open(f"{FUNCTIONS_DIR}/{function_name}.py") as f:
-            return f.read()
-    except FileNotFoundError:
-        return ""
 
 
 def edit_function(function_name: str) -> None:
@@ -56,7 +48,8 @@ def edit_function(function_name: str) -> None:
 def main() -> None:
     """Main function."""
     st.title("Edit Function")
-    selected_function = st.session_state.function_name
+    functions = st.session_state.function_names
+    selected_function = functions[0] if functions else ""
     edit_function(selected_function)
 
 

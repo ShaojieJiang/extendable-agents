@@ -3,6 +3,7 @@
 import importlib.util
 import sys
 from types import ModuleType
+from extendable_agent.constants import FUNCTIONS_DIR
 
 
 def load_code_as_module(
@@ -31,3 +32,12 @@ def load_code_as_module(
     exec(code_text, module.__dict__)
 
     return module
+
+
+def get_function_code(function_name: str) -> str:
+    """Get function code."""
+    try:
+        with open(f"{FUNCTIONS_DIR}/{function_name}.py") as f:
+            return f.read()
+    except FileNotFoundError:
+        return ""

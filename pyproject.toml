@@ -25,7 +25,9 @@ docs = [
 [project]
 authors = [{name = "Shaojie Jiang", email = "shaojie.jiang1@gmail.com"}]
 dependencies = [
+  "dotenv>=0.9.9",
   "pydantic>=2.10.6",
+  "pydantic-ai>=0.0.40",
   "streamlit>=1.43.2",
   "streamlit-code-editor>=0.1.22"
 ]

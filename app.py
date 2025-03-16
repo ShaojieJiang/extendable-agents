@@ -9,7 +9,6 @@ from extendable_agent.constants import PAGES
 def main() -> None:
     """Main function."""
     pg = st.navigation(PAGES)
-    pg.run()
 
     # Get files from ./functions directory
     function_names = []
@@ -23,10 +22,11 @@ def main() -> None:
             if f.endswith(".py") and not f.startswith("__")
         ]
 
-    st.session_state.function_name = st.sidebar.selectbox(
+    st.session_state.function_names = st.sidebar.multiselect(
         "Function or Pydantic model name",
         function_names,
     )
+    pg.run()
 
 
 main()
