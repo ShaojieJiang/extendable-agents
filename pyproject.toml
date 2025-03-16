@@ -11,7 +11,7 @@ dev = [
   "pytest",
   "pytest-asyncio==0.23.8",
   "pytest-cov==4.1.0",
-  "ruff==0.4.6",
+  "ruff>=0.11.0",
   "types-requests"
 ]
 docs = [
@@ -23,9 +23,17 @@ docs = [
 ]
 
 [project]
-dependencies = []
-description = "Add your description here"
-name = "uv-template"
+authors = [{name = "Shaojie Jiang", email = "shaojie.jiang1@gmail.com"}]
+dependencies = [
+  "dotenv>=0.9.9",
+  "pydantic>=2.10.6",
+  "pydantic-ai>=0.0.40",
+  "streamlit>=1.43.2",
+  "streamlit-code-editor>=0.1.22"
+]
+description = "An Agentic platform that allows you to define extensions"
+license = {file = "LICENSE"}
+name = "extendable-agent"
 readme = "README.md"
 requires-python = ">=3.12"
 version = "0.1.0"
