@@ -1,4 +1,4 @@
-"""Example module."""
+"""Agent module."""
 
 
 def main() -> None:
