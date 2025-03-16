@@ -42,6 +42,8 @@ class AgentModel:
             tools_hub = ToolsHub()
             for tool_name in self.function_tools:
                 function_code = tools_hub.get_file_from_github(tool_name)
+                if not function_code:
+                    continue
                 module = load_code_as_module(function_code)
                 tools.append(getattr(module, tool_name))
 

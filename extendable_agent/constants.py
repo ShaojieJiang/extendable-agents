@@ -1,6 +1,5 @@
 """Constants."""
 
-import os
 import streamlit as st
 
 
@@ -10,4 +9,4 @@ PAGES = [
 ]
 GITHUB_REPO = "AI-Colleagues/tools-hub"
 GITHUB_DIR = "tools"
-GITHUB_TOKEN = os.getenv("TOOLS_HUB_TOKEN", "")
+GITHUB_TOKEN = st.secrets["api_keys"]["TOOLS_HUB_TOKEN"]

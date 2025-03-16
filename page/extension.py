@@ -2,6 +2,8 @@
 
 import streamlit as st
 from code_editor import code_editor
+from extendable_agent.app_state import AppState
+from extendable_agent.app_state import ensure_app_state
 from extendable_agent.hub import ToolsHub
 from extendable_agent.tools import load_code_as_module
 
@@ -38,10 +40,11 @@ def edit_function(function_name: str) -> None:
             )
 
 
-def main() -> None:
+@ensure_app_state
+def main(app_state: AppState) -> None:
     """Main function."""
     st.title("Edit Function")
-    functions = st.session_state.function_names
+    functions = app_state.selected_func_names
     selected_function = functions[0] if functions else ""
     edit_function(selected_function)
 
