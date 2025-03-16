@@ -1,26 +1,24 @@
 """Streamlit app."""
 
-import os
 import streamlit as st
-from extendable_agent.constants import FUNCTIONS_DIR
 from extendable_agent.constants import PAGES
+from extendable_agent.hub import ToolsHub
+
+
+def load_function_names() -> list[str]:
+    """Load function names from Tools Hub."""
+    tools_hub = ToolsHub()
+    if "function_names" not in st.session_state:
+        st.session_state.function_names = tools_hub.get_file_list_from_github()
+    return st.session_state.function_names
 
 
 def main() -> None:
     """Main function."""
     pg = st.navigation(PAGES)
 
-    # Get files from ./functions directory
-    function_names = []
-
-    # Check if functions directory exists
-    if os.path.exists(FUNCTIONS_DIR) and os.path.isdir(FUNCTIONS_DIR):
-        # Get all Python files in the functions directory
-        function_names = [
-            f[:-3]
-            for f in os.listdir(FUNCTIONS_DIR)
-            if f.endswith(".py") and not f.startswith("__")
-        ]
+    # Get function names from Tools Hub
+    function_names = load_function_names()
 
     st.session_state.function_names = st.sidebar.multiselect(
         "Function or Pydantic model name",

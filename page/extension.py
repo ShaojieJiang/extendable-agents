@@ -1,17 +1,15 @@
 """Extension page."""
 
-import os
 import streamlit as st
 from code_editor import code_editor
-from extendable_agent.constants import FUNCTIONS_DIR
-from extendable_agent.hub import upload_to_github
-from extendable_agent.tools import get_function_code
+from extendable_agent.hub import ToolsHub
 from extendable_agent.tools import load_code_as_module
 
 
 def edit_function(function_name: str) -> None:
     """Edit function."""
-    default_code = get_function_code(function_name)
+    tools_hub = ToolsHub()
+    default_code = tools_hub.get_file_from_github(function_name)
     code = code_editor(default_code, lang="python", height=300, options={"wrap": True})
     function_name = st.text_input(
         "Function or Pydantic model name", value=function_name
@@ -26,12 +24,8 @@ def edit_function(function_name: str) -> None:
                     item for item in dir(dynamic_module) if not item.startswith("__")
                 ]
                 assert function_name in module_contents
-                # Save the code to a file in the functions directory
-                # Ensure the functions directory exists
-                os.makedirs(FUNCTIONS_DIR, exist_ok=True)
-
                 # Upload the code to Tools Hub
-                upload_to_github(f"{function_name}.py", code["text"])
+                tools_hub.upload_to_github(f"{function_name}.py", code["text"])
                 st.success(f"Function {function_name} saved successfully!")
             except AssertionError:
                 st.error(f"Definition {function_name} not found in module")
