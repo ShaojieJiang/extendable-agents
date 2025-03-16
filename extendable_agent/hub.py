@@ -42,12 +42,14 @@ class ToolsHub:
             )
             return True
 
-    def get_file_from_github(self, file_name: str) -> str:
+    def get_file_from_github(self, file_name: str | None = None) -> str | None:
         """Get a file from Tools Hub.
 
         Args:
             file_name (str): Path and name of the file to get from the repository.
         """
+        if not file_name:
+            return None
         full_path = f"{GITHUB_DIR}/{file_name}"
         file = self.repo.get_contents(full_path)
         assert file and isinstance(file, ContentFile)
