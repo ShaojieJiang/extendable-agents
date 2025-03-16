@@ -15,6 +15,18 @@ class ToolsHub:
         gh = Github(GITHUB_TOKEN)
         self.repo = gh.get_repo(GITHUB_REPO)
 
+    def _add_extension(self, file_name: str) -> str:
+        """Add .py extension to the file name if it is not present."""
+        if not file_name.endswith(".py"):
+            file_name = f"{file_name}.py"
+        return file_name
+
+    def _strip_extension(self, file_name: str) -> str:
+        """Strip .py extension from the file name if it is present."""
+        if file_name.endswith(".py"):
+            file_name = file_name[:-3]
+        return file_name
+
     def upload_to_github(self, file_name: str, content: str) -> bool:
         """Upload a file to Tools Hub.
 
@@ -22,8 +34,7 @@ class ToolsHub:
             file_name (str): Path and name of the file to create in the repository.
             content (str): Content of the file to upload.
         """
-        if not file_name.endswith(".py"):
-            file_name = f"{file_name}.py"
+        file_name = self._add_extension(file_name)
         # Check if the file already exists in the repository
         full_path = f"{GITHUB_DIR}/{file_name}"
         try:
@@ -52,6 +63,7 @@ class ToolsHub:
         """
         if not file_name:
             return None
+        file_name = self._add_extension(file_name)
         full_path = f"{GITHUB_DIR}/{file_name}"
         file = self.repo.get_contents(full_path)
         assert file and isinstance(file, ContentFile)
@@ -66,4 +78,4 @@ class ToolsHub:
         """
         files = self.repo.get_contents(GITHUB_DIR)
         assert files and isinstance(files, list)
-        return [file.name for file in files]
+        return [self._strip_extension(file.name) for file in files]

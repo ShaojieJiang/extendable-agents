@@ -45,7 +45,9 @@ def display_chat_history(app_state: AppState) -> None:
 
 def get_agent(app_state: AppState) -> Agent:
     """Get agent."""
-    openai_api_key = st.sidebar.text_input("OpenAI API Key", type="password")
+    openai_api_key = st.sidebar.text_input(
+        "OpenAI API Key", type="password", value=os.getenv("OPENAI_API_KEY", "")
+    )
     if openai_api_key:
         os.environ["OPENAI_API_KEY"] = openai_api_key
 
