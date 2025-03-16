@@ -9,14 +9,20 @@ from extendable_agent.tools import load_code_as_module
 
 def get_function_code(function_name: str) -> str:
     """Get function code."""
-    with open(f"{FUNCTIONS_DIR}/{function_name}.py") as f:
-        return f.read()
+    try:
+        with open(f"{FUNCTIONS_DIR}/{function_name}.py") as f:
+            return f.read()
+    except FileNotFoundError:
+        return ""
 
 
-def edit_function(default_code: str = "") -> None:
+def edit_function(function_name: str) -> None:
     """Edit function."""
+    default_code = get_function_code(function_name)
     code = code_editor(default_code, lang="python", height=300, options={"wrap": True})
-    function_name = st.text_input("Function or Pydantic model name", value="")
+    function_name = st.text_input(
+        "Function or Pydantic model name", value=function_name
+    )
 
     if st.button("Save", disabled=not function_name):
         # Test loading the code as a module
@@ -40,13 +46,18 @@ def edit_function(default_code: str = "") -> None:
                 st.error(f"Definition {function_name} not found in module")
             except Exception as e:
                 st.error(f"Error loading code as module: {str(e)}")
+        else:
+            st.write(
+                "Press `Control + Enter` (Windows) or `Command + Enter` (Mac) "
+                "after editing the function."
+            )
 
 
 def main() -> None:
     """Main function."""
     st.title("Edit Function")
     selected_function = st.session_state.function_name
-    edit_function(get_function_code(selected_function))
+    edit_function(selected_function)
 
 
 main()

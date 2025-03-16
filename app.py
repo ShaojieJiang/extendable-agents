@@ -8,7 +8,8 @@ from extendable_agent.constants import PAGES
 
 def main() -> None:
     """Main function."""
-    st.navigation(PAGES)
+    pg = st.navigation(PAGES)
+    pg.run()
 
     # Get files from ./functions directory
     function_names = []
