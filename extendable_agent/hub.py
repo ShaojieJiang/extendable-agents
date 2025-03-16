@@ -22,6 +22,8 @@ class ToolsHub:
             file_name (str): Path and name of the file to create in the repository.
             content (str): Content of the file to upload.
         """
+        if not file_name.endswith(".py"):
+            file_name = f"{file_name}.py"
         # Check if the file already exists in the repository
         full_path = f"{GITHUB_DIR}/{file_name}"
         try:
@@ -53,7 +55,8 @@ class ToolsHub:
         full_path = f"{GITHUB_DIR}/{file_name}"
         file = self.repo.get_contents(full_path)
         assert file and isinstance(file, ContentFile)
-        return file.content
+        # Decode the base64-encoded content
+        return file.decoded_content.decode("utf-8")
 
     def get_file_list_from_github(self) -> list[str]:
         """Get a list of files from Tools Hub.
