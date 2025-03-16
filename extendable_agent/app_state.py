@@ -4,6 +4,7 @@ from collections.abc import Callable
 from functools import wraps
 from typing import Any
 from streamlit import session_state
+from extendable_agent.dataclasses import ChatMessage
 
 
 class AppState:
@@ -16,6 +17,8 @@ class AppState:
         """Known function names."""
         self.selected_func_names: list[str] = []
         """Selected function names."""
+        self.chat_history: list[ChatMessage] = []
+        """Chat history."""
 
 
 def ensure_app_state(func: Callable) -> Callable:
