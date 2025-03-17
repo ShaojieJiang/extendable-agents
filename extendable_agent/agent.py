@@ -1,6 +1,7 @@
 """Agent module."""
 
 from pydantic_ai import Agent
+from pydantic_ai import Tool
 from pydantic_ai.models import ModelSettings
 from extendable_agent.hub import ToolsHub
 from extendable_agent.tools import load_code_as_module
@@ -35,7 +36,7 @@ class AgentModel:
         self.model_settings = model_settings
         self.result_type = result_type
 
-    def get_pydantic_agent(self, model: str) -> Agent:
+    def get_pydantic_agent(self, model: str, hf_tools: list[Tool]) -> Agent:
         """Get the agent config from DB and convert to Pydantic agent."""
         tools = []
         if self.function_tools:
@@ -54,5 +55,5 @@ class AgentModel:
             name=self.name,
             system_prompt=self.system_prompt,
             model_settings=ModelSettings(**model_settings),
-            tools=tools,
+            tools=tools + hf_tools,
         )
