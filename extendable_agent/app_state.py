@@ -3,6 +3,7 @@
 from collections.abc import Callable
 from functools import wraps
 from typing import Any
+from pydantic_ai import Tool
 from streamlit import session_state
 from extendable_agent.dataclasses import ChatMessage
 
@@ -19,6 +20,8 @@ class AppState:
         """Selected function names."""
         self.chat_history: list[ChatMessage] = []
         """Chat history."""
+        self.tools: dict[str, Tool] = {}
+        """Tools converted from Hugging Face."""
 
 
 def ensure_app_state(func: Callable) -> Callable:

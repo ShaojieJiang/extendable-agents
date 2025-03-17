@@ -12,6 +12,7 @@ from extendable_agent.agent import AgentModel
 from extendable_agent.app_state import AppState
 from extendable_agent.app_state import ensure_app_state
 from extendable_agent.dataclasses import ChatMessage
+from extendable_agent.hf_tools import hf_to_pai_tools
 
 
 load_dotenv()
@@ -62,7 +63,8 @@ def get_agent(app_state: AppState) -> Agent:
         system_prompt=prompt,
         function_tools=tools,
     )
-    return agent_model.get_pydantic_agent(model)
+    hf_tools = list(app_state.tools.values())
+    return agent_model.get_pydantic_agent(model, hf_tools)
 
 
 def reset_chat_history(app_state: AppState) -> None:
@@ -70,10 +72,25 @@ def reset_chat_history(app_state: AppState) -> None:
     app_state.chat_history = []
 
 
+def get_hf_tools(app_state: AppState) -> None:
+    """Get Hugging Face tool names."""
+    user_input = st.sidebar.text_area(
+        "Hugging Face tool names, one per line", value="", height=200
+    )
+    tool_names = [line.strip() for line in user_input.split("\n") if line.strip()]
+    for tool_name in tool_names:
+        try:
+            tool = hf_to_pai_tools(tool_name)
+            app_state.tools[tool.name] = tool
+        except Exception as e:
+            st.error(f"Error converting tool {tool_name}: {e}")
+
+
 @ensure_app_state
 def main(app_state: AppState) -> None:
     """Main function."""
     st.title("Chatbot")
+    get_hf_tools(app_state)
     init_chat_history(app_state)
     display_chat_history(app_state)
     agent = get_agent(app_state)

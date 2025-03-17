@@ -30,6 +30,7 @@ dependencies = [
   "pydantic>=2.10.6",
   "pydantic-ai>=0.0.40",
   "pygithub>=2.6.1",
+  "smolagents>=1.11.0",
   "streamlit>=1.43.2",
   "streamlit-code-editor>=0.1.22"
 ]
