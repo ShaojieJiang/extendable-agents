@@ -81,7 +81,9 @@ def reset_chat_history(app_state: AppState) -> None:
 def get_hf_tools(app_state: AppState) -> None:
     """Get Hugging Face tool names."""
     user_input = st.sidebar.text_area(
-        "Hugging Face tool names, one per line", value="", height=100
+        "Hugging Face tool names, one per line",
+        value="NeuralNotwork/get-time",
+        height=100,
     )
     tool_names = [line.strip() for line in user_input.split("\n") if line.strip()]
     for tool_name in tool_names:
@@ -96,7 +98,7 @@ def config_mcp_servers(app_state: AppState) -> None:
     """Configure MCP server."""
     servers = st.sidebar.text_area(
         "MCP server commands and arguments, one per line",
-        value="",
+        value="uvx mcp-server-time",
         height=100,
     )
     for server in servers.split("\n"):
