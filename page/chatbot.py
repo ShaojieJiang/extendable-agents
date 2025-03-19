@@ -1,5 +1,6 @@
 """Chatbot page."""
 
+import asyncio
 import os
 import streamlit as st
 from dotenv import load_dotenv
@@ -24,7 +25,7 @@ def init_chat_history(app_state: AppState) -> None:
         app_state.chat_history = []
 
 
-def get_response(app_state: AppState, user_input: str, agent: Agent) -> None:
+async def get_response(app_state: AppState, user_input: str, agent: Agent) -> None:
     """Get response from agent."""
     history = [
         ModelRequest([UserPromptPart(content=chat.content)])
@@ -34,7 +35,11 @@ def get_response(app_state: AppState, user_input: str, agent: Agent) -> None:
     ]
     app_state.chat_history.append(ChatMessage(role="user", content=user_input))
     st.chat_message("user").write(user_input)
-    result = agent.run_sync(user_input, message_history=history)
+    if agent._mcp_servers:
+        async with agent.run_mcp_servers():
+            result = await agent.run(user_input, message_history=history)
+    else:
+        result = agent.run_sync(user_input, message_history=history)
     app_state.chat_history.append(ChatMessage(role="assistant", content=result.data))
 
 
@@ -62,6 +67,7 @@ def get_agent(app_state: AppState) -> Agent:
         name="Agent",
         system_prompt=prompt,
         function_tools=tools,
+        mcp_servers=app_state.mcp_servers,
     )
     hf_tools = list(app_state.tools.values())
     return agent_model.get_pydantic_agent(model, hf_tools)
@@ -75,7 +81,7 @@ def reset_chat_history(app_state: AppState) -> None:
 def get_hf_tools(app_state: AppState) -> None:
     """Get Hugging Face tool names."""
     user_input = st.sidebar.text_area(
-        "Hugging Face tool names, one per line", value="", height=200
+        "Hugging Face tool names, one per line", value="", height=100
     )
     tool_names = [line.strip() for line in user_input.split("\n") if line.strip()]
     for tool_name in tool_names:
@@ -86,11 +92,26 @@ def get_hf_tools(app_state: AppState) -> None:
             st.error(f"Error converting tool {tool_name}: {e}")
 
 
+def config_mcp_servers(app_state: AppState) -> None:
+    """Configure MCP server."""
+    servers = st.sidebar.text_area(
+        "MCP server commands and arguments, one per line",
+        value="",
+        height=100,
+    )
+    for server in servers.split("\n"):
+        if not server.strip():
+            continue
+        command, *args = server.split()
+        app_state.mcp_servers.append((command, args))
+
+
 @ensure_app_state
-def main(app_state: AppState) -> None:
+async def main(app_state: AppState) -> None:
     """Main function."""
     st.title("Chatbot")
     get_hf_tools(app_state)
+    config_mcp_servers(app_state)
     init_chat_history(app_state)
     display_chat_history(app_state)
     agent = get_agent(app_state)
@@ -100,8 +121,8 @@ def main(app_state: AppState) -> None:
     user_input = st.chat_input("Enter a message")
 
     if user_input:
-        get_response(app_state, user_input, agent)
+        await get_response(app_state, user_input, agent)
         st.rerun()
 
 
-main()
+asyncio.run(main())

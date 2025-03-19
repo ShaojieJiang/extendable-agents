@@ -22,6 +22,8 @@ class AppState:
         """Chat history."""
         self.tools: dict[str, Tool] = {}
         """Tools converted from Hugging Face."""
+        self.mcp_servers: list[tuple[str, list[str]]] = []
+        """MCP servers. Each tuple contains a command and a list of arguments."""
 
 
 def ensure_app_state(func: Callable) -> Callable:

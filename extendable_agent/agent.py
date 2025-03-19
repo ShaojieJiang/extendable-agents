@@ -2,6 +2,7 @@
 
 from pydantic_ai import Agent
 from pydantic_ai import Tool
+from pydantic_ai.mcp import MCPServerStdio
 from pydantic_ai.models import ModelSettings
 from extendable_agent.hub import ToolsHub
 from extendable_agent.tools import load_code_as_module
@@ -18,6 +19,7 @@ class AgentModel:
         function_tools: list[str] | None = None,
         model_settings: dict | None = None,
         result_type: dict | None = None,
+        mcp_servers: list[tuple[str, list[str]]] | None = None,
     ):
         """Initialize the agent model.
 
@@ -28,6 +30,7 @@ class AgentModel:
             function_tools (list[str]): The function tool names for the agent.
             model_settings (dict): The model settings for the agent.
             result_type (dict): The result type for the agent.
+            mcp_servers (list[tuple[str, list[str]]]): The MCP servers for the agent.
         """
         self.model = model
         self.name = name
@@ -35,6 +38,7 @@ class AgentModel:
         self.function_tools = function_tools
         self.model_settings = model_settings
         self.result_type = result_type
+        self.mcp_servers = mcp_servers
 
     def get_pydantic_agent(self, model: str, hf_tools: list[Tool]) -> Agent:
         """Get the agent config from DB and convert to Pydantic agent."""
@@ -50,6 +54,18 @@ class AgentModel:
 
         model_settings = self.model_settings or {}
 
+        if self.mcp_servers:
+            servers = [
+                MCPServerStdio(command, args) for command, args in self.mcp_servers
+            ]
+            return Agent(
+                model=model or self.model,  # type: ignore[arg-type]
+                name=self.name,
+                system_prompt=self.system_prompt,
+                model_settings=ModelSettings(**model_settings),
+                tools=tools + hf_tools,
+                mcp_servers=servers,
+            )
         return Agent(
             model=model or self.model,  # type: ignore[arg-type]
             name=self.name,
