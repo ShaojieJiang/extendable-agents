@@ -9,11 +9,11 @@ from pydantic_ai.messages import ModelRequest
 from pydantic_ai.messages import ModelResponse
 from pydantic_ai.messages import TextPart
 from pydantic_ai.messages import UserPromptPart
-from extendable_agent.agent import AgentModel
-from extendable_agent.app.app_state import AppState
-from extendable_agent.app.app_state import ensure_app_state
-from extendable_agent.dataclasses import ChatMessage
-from extendable_agent.hf_tools import hf_to_pai_tools
+from extendable_agents.agent import AgentModel
+from extendable_agents.app.app_state import AppState
+from extendable_agents.app.app_state import ensure_app_state
+from extendable_agents.dataclasses import ChatMessage
+from extendable_agents.hf_tools import hf_to_pai_tools
 
 
 load_dotenv()

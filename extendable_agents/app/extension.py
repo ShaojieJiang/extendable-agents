@@ -2,10 +2,10 @@
 
 import streamlit as st
 from code_editor import code_editor
-from extendable_agent.app.app_state import AppState
-from extendable_agent.app.app_state import ensure_app_state
-from extendable_agent.hub import ToolsHub
-from extendable_agent.tools import load_code_as_module
+from extendable_agents.app.app_state import AppState
+from extendable_agents.app.app_state import ensure_app_state
+from extendable_agents.hub import ToolsHub
+from extendable_agents.tools import load_code_as_module
 
 
 def edit_function(function_name: str) -> None:

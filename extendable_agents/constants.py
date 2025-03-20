@@ -4,8 +4,8 @@ import streamlit as st
 
 
 PAGES = [
-    st.Page("extendable_agent/app/chatbot.py", title="Chatbot", icon="🤖"),
-    st.Page("extendable_agent/app/extension.py", title="Extension", icon="🔧"),
+    st.Page("extendable_agents/app/chatbot.py", title="Chatbot", icon="🤖"),
+    st.Page("extendable_agents/app/extension.py", title="Extension", icon="🔧"),
 ]
 GITHUB_REPO = "AI-Colleagues/tools-hub"
 GITHUB_DIR = "tools"

@@ -2,9 +2,9 @@
 
 from github import Github
 from github.ContentFile import ContentFile
-from extendable_agent.constants import GITHUB_DIR
-from extendable_agent.constants import GITHUB_REPO
-from extendable_agent.constants import GITHUB_TOKEN
+from extendable_agents.constants import GITHUB_DIR
+from extendable_agents.constants import GITHUB_REPO
+from extendable_agents.constants import GITHUB_TOKEN
 
 
 class ToolsHub:

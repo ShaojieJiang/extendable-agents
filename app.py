@@ -1,6 +1,6 @@
 """Streamlit app."""
 
-from extendable_agent.app.main import main
+from extendable_agents.app.main import main
 
 
 main()

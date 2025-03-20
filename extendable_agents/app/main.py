@@ -1,10 +1,10 @@
 """Main page."""
 
 import streamlit as st
-from extendable_agent.app.app_state import AppState
-from extendable_agent.app.app_state import ensure_app_state
-from extendable_agent.constants import PAGES
-from extendable_agent.hub import ToolsHub
+from extendable_agents.app.app_state import AppState
+from extendable_agents.app.app_state import ensure_app_state
+from extendable_agents.constants import PAGES
+from extendable_agents.hub import ToolsHub
 
 
 def load_function_names(app_state: AppState) -> list[str]:

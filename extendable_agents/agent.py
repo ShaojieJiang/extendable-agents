@@ -4,8 +4,8 @@ from pydantic_ai import Agent
 from pydantic_ai import Tool
 from pydantic_ai.mcp import MCPServerStdio
 from pydantic_ai.models import ModelSettings
-from extendable_agent.hub import ToolsHub
-from extendable_agent.tools import load_code_as_module
+from extendable_agents.hub import ToolsHub
+from extendable_agents.tools import load_code_as_module
 
 
 class AgentModel:

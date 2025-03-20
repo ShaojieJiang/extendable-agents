@@ -5,7 +5,7 @@ from functools import wraps
 from typing import Any
 from pydantic_ai import Tool
 from streamlit import session_state
-from extendable_agent.dataclasses import ChatMessage
+from extendable_agents.dataclasses import ChatMessage
 
 
 class AppState:
