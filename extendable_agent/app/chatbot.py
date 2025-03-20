@@ -10,8 +10,8 @@ from pydantic_ai.messages import ModelResponse
 from pydantic_ai.messages import TextPart
 from pydantic_ai.messages import UserPromptPart
 from extendable_agent.agent import AgentModel
-from extendable_agent.app_state import AppState
-from extendable_agent.app_state import ensure_app_state
+from extendable_agent.app.app_state import AppState
+from extendable_agent.app.app_state import ensure_app_state
 from extendable_agent.dataclasses import ChatMessage
 from extendable_agent.hf_tools import hf_to_pai_tools
 
@@ -37,9 +37,9 @@ async def get_response(app_state: AppState, user_input: str, agent: Agent) -> No
     st.chat_message("user").write(user_input)
     if agent._mcp_servers:
         async with agent.run_mcp_servers():
-            result = await agent.run(user_input, message_history=history)
+            result = await agent.run(user_input, message_history=history)  # type: ignore
     else:
-        result = agent.run_sync(user_input, message_history=history)
+        result = agent.run_sync(user_input, message_history=history)  # type: ignore
     app_state.chat_history.append(ChatMessage(role="assistant", content=result.data))
 
 

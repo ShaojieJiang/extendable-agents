@@ -2,8 +2,8 @@
 
 import streamlit as st
 from code_editor import code_editor
-from extendable_agent.app_state import AppState
-from extendable_agent.app_state import ensure_app_state
+from extendable_agent.app.app_state import AppState
+from extendable_agent.app.app_state import ensure_app_state
 from extendable_agent.hub import ToolsHub
 from extendable_agent.tools import load_code_as_module
 
