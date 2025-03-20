@@ -4,7 +4,6 @@ import json
 from huggingface_hub import HfApi
 from huggingface_hub.errors import LocalEntryNotFoundError
 from pydantic import BaseModel
-from pydantic_ai.models import KnownModelName
 from extendable_agents.logging import get_logger
 
 
@@ -21,8 +20,8 @@ class MCPServerConfig(BaseModel):
 class AgentConfig(BaseModel):
     """Configuration class for Agent initialization."""
 
-    model: KnownModelName
-    # result_type: type[ResultDataT] = str
+    model: str
+    # result_type: Any = str
     system_prompt: str = "You are a helpful assistant."
     # deps_type: type[AgentDepsT] = (NoneType,)
     name: str = "Agent"
