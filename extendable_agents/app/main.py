@@ -11,7 +11,7 @@ from extendable_agents.logging import get_logger
 logger = get_logger(__name__)
 
 
-# @st.cache_resource  # TODO:
+@st.cache_resource
 def load_repo() -> None:
     """Load repo."""
     hf_repo = HFRepo()
