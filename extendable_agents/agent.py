@@ -1,16 +1,14 @@
 """Agent module."""
 
-from typing import TypeVar
+from typing import Any
 from typing import Union
 from huggingface_hub.errors import LocalEntryNotFoundError
 from pydantic import BaseModel
 from pydantic_ai import Agent
 from pydantic_ai import Tool
+from pydantic_ai.agent import ModelSettings
 from smolagents import load_tool
 from extendable_agents.hub import HFRepo
-
-
-T = TypeVar("T")
 
 
 class AgentConfig(BaseModel):
@@ -92,7 +90,7 @@ class AgentFactory:
             description=tool.description if not tool.forward.__doc__ else None,
         )
 
-    def get_result_type(self) -> type[T]:
+    def get_result_type(self) -> Any:
         """Creates a Union type from a list of types."""
         if not self.config.result_type:
             return str
@@ -113,7 +111,8 @@ class AgentFactory:
                     hf_repo = HFRepo()
                     type_objects.append(hf_repo.load_structured_output(type_str))
 
-        return Union[tuple(type_objects)]  # noqa: UP007
+        # Create a new type using Union
+        return Union.__getitem__(tuple(type_objects))
 
     def get_tools(self) -> list[Tool]:
         """Get the tools from known tools and hf tools."""
@@ -121,7 +120,7 @@ class AgentFactory:
         hf_repo = HFRepo()
         for tool_name in self.config.known_tools:
             tool = hf_repo.load_tool(tool_name)
-            tools.append(Tool(tool))
+            tools.append(Tool(tool))  # type: ignore[arg-type]
         for tool_name in self.config.hf_tools:
             tools.append(self.hf_to_pai_tools(tool_name))
         return tools
@@ -140,19 +139,21 @@ class AgentFactory:
         """Create an agent from a config."""
         result_type = self.get_result_type()
         return Agent(
-            model=self.config.model,
+            model=self.config.model,  # type: ignore[arg-type]
             result_type=result_type,
             system_prompt=self.config.system_prompt,
             name=self.config.name,
-            model_settings=self.config.model_settings,
+            model_settings=ModelSettings(**self.config.model_settings)
+            if self.config.model_settings
+            else None,
             retries=self.config.retries,
             result_tool_name=self.config.result_tool_name,
             result_tool_description=self.config.result_tool_description,
             result_retries=self.config.result_retries,
             tools=self.get_tools(),
-            mcp_servers=self.get_mcp_servers(),
+            mcp_servers=self.get_mcp_servers(),  # type: ignore[arg-type]
             defer_model_check=self.config.defer_model_check,
-            end_strategy=self.config.end_strategy,
+            end_strategy=self.config.end_strategy,  # type: ignore[arg-type]
         )
 
 
