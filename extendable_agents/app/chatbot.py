@@ -111,7 +111,7 @@ def config_mcp_servers(app_state: AppState) -> None:
 @ensure_app_state
 async def main(app_state: AppState) -> None:
     """Main function."""
-    st.title("Chatbot")
+    st.title("Extendable Agents")
     get_hf_tools(app_state)
     config_mcp_servers(app_state)
     init_chat_history(app_state)
