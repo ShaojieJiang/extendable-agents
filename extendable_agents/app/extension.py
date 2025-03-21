@@ -5,6 +5,7 @@ from code_editor import code_editor
 from pydantic import BaseModel
 from extendable_agents.app.app_state import AppState
 from extendable_agents.app.app_state import ensure_app_state
+from extendable_agents.app.shared_components import function_selector
 from extendable_agents.hub import HFRepo
 from extendable_agents.tools import load_code_as_module
 
@@ -66,7 +67,7 @@ def edit_function(function_name: str) -> None:
 def main(app_state: AppState) -> None:
     """Main function."""
     st.title("Custom Function or Pydantic Model")
-    functions = app_state.selected_func_names
+    functions = function_selector()
     selected_function = functions[0] if functions else ""
     edit_function(selected_function)
 

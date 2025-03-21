@@ -9,9 +9,11 @@ from pydantic_ai.messages import ModelRequest
 from pydantic_ai.messages import ModelResponse
 from pydantic_ai.messages import TextPart
 from pydantic_ai.messages import UserPromptPart
-from extendable_agents.agent import AgentModel
+from extendable_agents.agent import AgentConfig
+from extendable_agents.agent import AgentFactory
 from extendable_agents.app.app_state import AppState
 from extendable_agents.app.app_state import ensure_app_state
+from extendable_agents.app.shared_components import agent_selector
 from extendable_agents.dataclasses import ChatMessage
 
 
@@ -38,7 +40,7 @@ async def get_response(app_state: AppState, user_input: str, agent: Agent) -> No
         async with agent.run_mcp_servers():
             result = await agent.run(user_input, message_history=history)  # type: ignore
     else:
-        result = agent.run_sync(user_input, message_history=history)  # type: ignore
+        result = await agent.run(user_input, message_history=history)  # type: ignore
     app_state.chat_history.append(ChatMessage(role="assistant", content=result.data))
 
 
@@ -56,20 +58,12 @@ def get_agent(app_state: AppState) -> Agent:
     if openai_api_key:
         os.environ["OPENAI_API_KEY"] = openai_api_key
 
-    prompt = st.sidebar.text_area("Prompt", value="You are a helpful assistant.")
-    model = st.sidebar.selectbox(
-        "Model", options=["openai:gpt-4o-mini", "openai:gpt-4o"]
-    )
-    tools = app_state.selected_func_names
-    agent_model = AgentModel(
-        model=model,
-        name="Agent",
-        system_prompt=prompt,
-        function_tools=tools,
-        mcp_servers=app_state.mcp_servers,
-    )
-    hf_tools = list(app_state.tools.values())
-    return agent_model.get_pydantic_agent(model, hf_tools)
+    agent_name = agent_selector()
+    agent_config = AgentConfig.from_hub(agent_name)
+    agent_factory = AgentFactory(agent_config)
+    agent = agent_factory.create_agent()
+
+    return agent
 
 
 def reset_chat_history(app_state: AppState) -> None:
@@ -77,25 +71,10 @@ def reset_chat_history(app_state: AppState) -> None:
     app_state.chat_history = []
 
 
-def config_mcp_servers(app_state: AppState) -> None:
-    """Configure MCP server."""
-    servers = st.sidebar.text_area(
-        "MCP server commands and arguments, one per line",
-        value="uvx mcp-server-time",
-        height=100,
-    )
-    for server in servers.split("\n"):
-        if not server.strip():
-            continue
-        command, *args = server.split()
-        app_state.mcp_servers.append((command, args))
-
-
 @ensure_app_state
 async def main(app_state: AppState) -> None:
     """Main function."""
     st.title("Extendable Agents")
-    config_mcp_servers(app_state)
     init_chat_history(app_state)
     display_chat_history(app_state)
     agent = get_agent(app_state)
