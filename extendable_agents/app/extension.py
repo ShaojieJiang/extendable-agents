@@ -3,8 +3,6 @@
 import streamlit as st
 from code_editor import code_editor
 from pydantic import BaseModel
-from extendable_agents.app.app_state import AppState
-from extendable_agents.app.app_state import ensure_app_state
 from extendable_agents.app.shared_components import function_selector
 from extendable_agents.hub import HFRepo
 from extendable_agents.tools import load_code_as_module
@@ -18,7 +16,7 @@ def edit_function(function_name: str) -> None:
         with open(file_path) as f:
             default_code = f.read()
     else:
-        with open("extendable_agents/app/tmplate.py") as f:
+        with open("extendable_agents/app/extension_template.py") as f:
             default_code = f.read()
 
     code = code_editor(default_code, lang="python", height=300, options={"wrap": True})
@@ -63,8 +61,7 @@ def edit_function(function_name: str) -> None:
             st.write()
 
 
-@ensure_app_state
-def main(app_state: AppState) -> None:
+def main() -> None:
     """Main function."""
     st.title("Custom Function or Pydantic Model")
     functions = function_selector()

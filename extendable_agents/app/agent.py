@@ -63,8 +63,11 @@ def configure(config: AgentConfig) -> AgentConfig:
         "Result retries", min_value=0, max_value=100, value=config.retries
     )
     list_known_tools = list_function_names()
+    default_known_tools = [
+        tool for tool in config.known_tools if tool in list_known_tools
+    ]
     known_tools = st.multiselect(
-        "Known tools", options=list_known_tools, default=config.known_tools
+        "Known tools", options=list_known_tools, default=default_known_tools
     )
     hf_tools = st.text_area("HF tools", value="\n".join(config.hf_tools))
     mcp_servers = st.text_area("MCP servers", value="\n".join(config.mcp_servers))

@@ -7,6 +7,8 @@ from pydantic import BaseModel
 from pydantic_ai import Agent
 from pydantic_ai import Tool
 from pydantic_ai.agent import ModelSettings
+from pydantic_ai.models.openai import OpenAIModel
+from pydantic_ai.providers.openai import OpenAIProvider
 from smolagents import load_tool
 from extendable_agents.hub import HFRepo
 
@@ -59,7 +61,7 @@ class AgentConfig(BaseModel):
 
         # Verify before uploading
         agent_factory = AgentFactory(self)
-        agent_factory.create_agent()
+        agent_factory.create_agent(api_key="key")
 
         # Upload the file
         repo.upload_content(
@@ -135,11 +137,13 @@ class AgentFactory:
             servers.append((command, args))
         return servers
 
-    def create_agent(self) -> Agent:
+    def create_agent(self, api_key: str) -> Agent:
         """Create an agent from a config."""
         result_type = self.get_result_type()
+        model_name = self.config.model.split(":")[1]
+        model = OpenAIModel(model_name, provider=OpenAIProvider(api_key=api_key))
         return Agent(
-            model=self.config.model,  # type: ignore[arg-type]
+            model=model,
             result_type=result_type,
             system_prompt=self.config.system_prompt,
             name=self.config.name,

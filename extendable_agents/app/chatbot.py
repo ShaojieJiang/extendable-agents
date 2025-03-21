@@ -3,7 +3,6 @@
 import asyncio
 import os
 import streamlit as st
-from dotenv import load_dotenv
 from pydantic_ai import Agent
 from pydantic_ai.messages import ModelRequest
 from pydantic_ai.messages import ModelResponse
@@ -15,9 +14,6 @@ from extendable_agents.app.app_state import AppState
 from extendable_agents.app.app_state import ensure_app_state
 from extendable_agents.app.shared_components import agent_selector
 from extendable_agents.dataclasses import ChatMessage
-
-
-load_dotenv()
 
 
 def init_chat_history(app_state: AppState) -> None:
@@ -50,7 +46,7 @@ def display_chat_history(app_state: AppState) -> None:
         st.chat_message(chat.role).write(chat.content)
 
 
-def get_agent(app_state: AppState) -> Agent:
+def get_agent() -> Agent:
     """Get agent."""
     openai_api_key = st.sidebar.text_input(
         "OpenAI API Key", type="password", value=os.getenv("OPENAI_API_KEY", "")
@@ -61,7 +57,7 @@ def get_agent(app_state: AppState) -> Agent:
     agent_name = agent_selector()
     agent_config = AgentConfig.from_hub(agent_name)
     agent_factory = AgentFactory(agent_config)
-    agent = agent_factory.create_agent()
+    agent = agent_factory.create_agent(api_key=openai_api_key)
 
     return agent
 
@@ -77,7 +73,7 @@ async def main(app_state: AppState) -> None:
     st.title("Extendable Agents")
     init_chat_history(app_state)
     display_chat_history(app_state)
-    agent = get_agent(app_state)
+    agent = get_agent()
     st.sidebar.button(
         "Reset chat history", on_click=reset_chat_history, args=(app_state,)
     )
