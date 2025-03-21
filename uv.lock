@@ -511,7 +511,7 @@ wheels = [
 ]
 
 [[package]]
-name = "extendable-agent"
+name = "extendable-agents"
 version = "0.0.2"
 source = { editable = "." }
 dependencies = [
