@@ -41,10 +41,13 @@ def test_load_file(mock_download):
     repo = HFRepo("test-repo")
     mock_download.side_effect = ["/path/to/file"]
 
-    result = repo._load_file("test.txt")
+    result = repo._load_file("test.py", "function")
     assert result == "/path/to/file"
     mock_download.assert_called_with(
-        repo_id="test-repo", filename="test.txt", local_files_only=True
+        repo_id="test-repo",
+        filename="test.py",
+        subfolder=HFRepo.tools_dir,
+        local_files_only=True,
     )
 
 
@@ -53,7 +56,7 @@ def test_load_file_fallback(mock_download):
     repo = HFRepo("test-repo")
     mock_download.side_effect = LocalEntryNotFoundError("Test exception")
     with pytest.raises(LocalEntryNotFoundError):
-        repo._load_file("test.txt")
+        repo._load_file("test.py", "function")
 
 
 @patch("extendable_agents.hub.hf_hub_download")
@@ -112,7 +115,7 @@ def test_upload_file(mock_upload):
     repo.upload_file("test_func", "content", "function")
     mock_upload.assert_called_with(
         path_or_fileobj="content",
-        path_in_repo="tools/test_func.py",
+        path_in_repo=f"{HFRepo.tools_dir}/test_func.py",
         repo_id="test-repo",
         commit_message="Update test_func.py",
     )
@@ -121,7 +124,7 @@ def test_upload_file(mock_upload):
     repo.upload_file("test_config", "content", "config")
     mock_upload.assert_called_with(
         path_or_fileobj="content",
-        path_in_repo="configs/test_config.json",
+        path_in_repo=f"{HFRepo.agents_dir}/test_config.json",
         repo_id="test-repo",
         commit_message="Update test_config.json",
     )

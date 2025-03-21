@@ -1,9 +1,9 @@
 """Agent config."""
 
-import json
 from huggingface_hub import HfApi
-from huggingface_hub.errors import LocalEntryNotFoundError
 from pydantic import BaseModel
+from extendable_agents.constants import HF_REPO_ID
+from extendable_agents.hub import HFRepo
 from extendable_agents.logging import get_logger
 
 
@@ -51,17 +51,10 @@ class AgentConfig(BaseModel):
     """Version of the agent config."""
 
     @classmethod
-    def from_hub(cls, repo_id: str) -> "AgentConfig":
+    def from_hub(cls, agent_name: str) -> "AgentConfig":
         """Load an agent config from Hugging Face Hub."""
-        api = HfApi()
-        try:
-            config_str = api.hf_hub_download(
-                repo_id=repo_id, filename="agent.json", local_files_only=True
-            )
-        except LocalEntryNotFoundError as e:
-            logger.warning(f"Failed to load agent config from Hugging Face Hub: {e}")
-            config_str = api.hf_hub_download(repo_id=repo_id, filename="agent.json")
-        config_obj = json.loads(config_str)
+        repo = HFRepo(HF_REPO_ID)
+        config_obj = repo.load_config(agent_name)
         return cls(**config_obj)
 
     def push_to_hub(self, repo_id: str) -> None:

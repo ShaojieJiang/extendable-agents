@@ -1,7 +1,5 @@
 from unittest.mock import Mock
 from unittest.mock import patch
-import pytest
-from huggingface_hub.errors import LocalEntryNotFoundError
 from extendable_agents.agent_config import AgentConfig
 from extendable_agents.agent_config import MCPServerConfig
 
@@ -34,32 +32,26 @@ def test_mcp_server_config():
     assert config.mcp_servers[0].args == ["arg1", "arg2"]
 
 
-@patch("extendable_agents.agent_config.HfApi")
-def test_from_hub(mock_hf_api):
+@patch("extendable_agents.agent_config.HFRepo")
+def test_from_hub(mock_hf_repo):
     """Test loading config from Hugging Face Hub."""
-    mock_api = Mock()
-    mock_api.hf_hub_download.return_value = """
-    {
+    # Create a Mock instance for the repo
+    mock_repo = Mock()
+    mock_hf_repo.return_value = mock_repo
+
+    # Set up the load_config mock on the repo instance
+    mock_repo.load_config.return_value = {
         "model": "openai:gpt-4o",
         "name": "TestAgent",
-        "system_prompt": "Test prompt"
+        "system_prompt": "Test prompt",
     }
-    """
-    mock_hf_api.return_value = mock_api
 
-    config = AgentConfig.from_hub("test/repo")
+    config = AgentConfig.from_hub("agent")
 
     assert config.model == "openai:gpt-4o"
     assert config.name == "TestAgent"
     assert config.system_prompt == "Test prompt"
-    mock_api.hf_hub_download.assert_called_with(
-        repo_id="test/repo", filename="agent.json", local_files_only=True
-    )
-
-    # mock_api.hf_hub_download raises an exception
-    mock_api.hf_hub_download.side_effect = LocalEntryNotFoundError("Test exception")
-    with pytest.raises(LocalEntryNotFoundError):
-        AgentConfig.from_hub("test/repo")
+    mock_repo.load_config.assert_called_with("agent")
 
 
 @patch("extendable_agents.agent_config.HfApi")

@@ -17,6 +17,9 @@ from extendable_agents.constants import GITHUB_REPO
 from extendable_agents.constants import GITHUB_TOKEN
 
 
+HFRepoFileTypes = Literal["function", "config", "structured_output"]
+
+
 class HFRepo:
     """Hugging Face Repo class.
 
@@ -24,6 +27,9 @@ class HFRepo:
     It allows loading files, configs, and tools from a specified repository,
     as well as handling local caching when possible.
     """
+
+    tools_dir: str = "tools"
+    agents_dir: str = "agents"
 
     def __init__(self, repo_id: str) -> None:
         """Initialize the Hugging Face Hub."""
@@ -33,14 +39,26 @@ class HFRepo:
         """Load all files from the Hugging Face Hub."""
         snapshot_download(repo_id=self.repo_id, repo_type="space")
 
-    def _load_file(self, filename: str) -> str:
+    def _load_file(self, filename: str, file_type: HFRepoFileTypes) -> str:
         """Load a file from the Hugging Face Hub."""
+        match file_type:
+            case "function" | "structured_output":
+                subfolder = self.tools_dir
+            case "config":
+                subfolder = self.agents_dir
+            case _:
+                raise ValueError(f"Invalid type: {file_type}")
         try:
             file_path = hf_hub_download(
-                repo_id=self.repo_id, filename=filename, local_files_only=True
+                repo_id=self.repo_id,
+                filename=filename,
+                subfolder=subfolder,
+                local_files_only=True,
             )
         except LocalEntryNotFoundError:
-            file_path = hf_hub_download(repo_id=self.repo_id, filename=filename)
+            file_path = hf_hub_download(
+                repo_id=self.repo_id, filename=filename, subfolder=subfolder
+            )
         return file_path
 
     def _load_module(self, module_name: str, path: str) -> ModuleType:
@@ -61,7 +79,7 @@ class HFRepo:
     def load_config(self, filename: str, extension: str = ".json") -> dict:
         """Load a config from the Hugging Face Hub."""
         filename = self._check_extension(filename, extension)
-        file_path = self._load_file(filename)
+        file_path = self._load_file(filename, "config")
 
         with open(file_path) as file:
             return json.load(file)
@@ -72,7 +90,7 @@ class HFRepo:
         """Load a tool from the Hugging Face Hub."""
         name_without_extension = filename.split(".")[0]
         filename = self._check_extension(filename, extension)
-        file_path = self._load_file(filename)
+        file_path = self._load_file(filename, "function")
         module = self._load_module(name_without_extension, file_path)
         func = getattr(module, name_without_extension)
         assert callable(func)
@@ -92,18 +110,18 @@ class HFRepo:
         self,
         filename: str,
         content: str,
-        type: Literal["function", "config", "structured_output"],
+        file_type: HFRepoFileTypes,
     ) -> None:
         """Upload a file to the Hugging Face Hub."""
-        match type:
+        match file_type:
             case "function" | "structured_output":
                 extension = ".py"
-                path_in_repo = "tools"
+                path_in_repo = self.tools_dir
             case "config":
                 extension = ".json"
-                path_in_repo = "configs"
+                path_in_repo = self.agents_dir
             case _:
-                raise ValueError(f"Invalid type: {type}")
+                raise ValueError(f"Invalid type: {file_type}")
 
         filename = self._check_extension(filename, extension)
 

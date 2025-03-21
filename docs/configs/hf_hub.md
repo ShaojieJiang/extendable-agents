@@ -10,10 +10,12 @@ stateDiagram-v2
     StandBy --> LoadTool
     StandBy --> UpdateConfig
     StandBy --> UpdateTool
+    StandBy --> ManualReload
     LoadConfig --> ReturnConfig
     LoadTool --> ReturnTool
     UpdateConfig --> PushToHFHub
     UpdateTool --> PushToHFHub
+    ManualReload --> PullRepo
     PushToHFHub --> PullRepo
     StandBy --> [*]
     ReturnConfig --> [*]

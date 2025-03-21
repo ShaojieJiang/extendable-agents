@@ -1,5 +1,6 @@
 """Constants."""
 
+import os
 import streamlit as st
 
 
@@ -10,3 +11,4 @@ PAGES = [
 GITHUB_REPO = "AI-Colleagues/tools-hub"
 GITHUB_DIR = "tools"
 GITHUB_TOKEN = st.secrets["api_keys"]["TOOLS_HUB_TOKEN"]
+HF_REPO_ID = os.environ.get("HF_REPO_ID", "NeuralNotwork/extendable-agents")
