@@ -27,6 +27,7 @@ authors = [{name = "Shaojie Jiang", email = "shaojie.jiang1@gmail.com"}]
 dependencies = [
   "dotenv>=0.9.9",
   "httpx>=0.28.1",
+  "huggingface-hub>=0.29.3",
   "pydantic>=2.10.6",
   "pydantic-ai>=0.0.42",
   "pydantic-ai-slim[mcp]>=0.0.42",
@@ -37,7 +38,7 @@ dependencies = [
 ]
 description = "An Agentic platform that allows you to define extensions"
 license = {file = "LICENSE"}
-name = "extendable-agent"
+name = "extendable-agents"
 readme = "README.md"
 requires-python = ">=3.12"
 version = "0.0.2"
@@ -53,7 +54,7 @@ exclude_lines = [
 [tool.coverage.run]
 branch = true
 command_line = "-m pytest"
-source = ["poetry_template"]
+source = ["extendable_agents"]
 
 [tool.mypy]
 disallow_untyped_defs = true
@@ -95,7 +96,7 @@ select = [
 
 [tool.ruff.lint.isort]
 force-single-line = true
-known-first-party = ["poetry_template"]
+known-first-party = ["extendable_agents"]
 lines-after-imports = 2
 no-lines-before = ["future", "standard-library", "third-party", "first-party", "local-folder"]
 

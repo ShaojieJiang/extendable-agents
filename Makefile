@@ -1,6 +1,6 @@
 lint:
 	ruff check .
-	mypy extendable_agent/
+	mypy extendable_agents/
 	ruff format . --check
 
 format:

@@ -512,11 +512,12 @@ wheels = [
 
 [[package]]
 name = "extendable-agent"
-version = "0.0.1"
+version = "0.0.2"
 source = { editable = "." }
 dependencies = [
     { name = "dotenv" },
     { name = "httpx" },
+    { name = "huggingface-hub" },
     { name = "pydantic" },
     { name = "pydantic-ai" },
     { name = "pydantic-ai-slim", extra = ["mcp"] },
@@ -550,6 +551,7 @@ docs = [
 requires-dist = [
     { name = "dotenv", specifier = ">=0.9.9" },
     { name = "httpx", specifier = ">=0.28.1" },
+    { name = "huggingface-hub", specifier = ">=0.29.3" },
     { name = "pydantic", specifier = ">=2.10.6" },
     { name = "pydantic-ai", specifier = ">=0.0.42" },
     { name = "pydantic-ai-slim", extras = ["mcp"], specifier = ">=0.0.42" },
