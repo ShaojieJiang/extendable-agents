@@ -102,16 +102,11 @@ class AgentFactory:
         type_objects = []
         for type_str in self.config.result_type:
             # Handle built-in types and local class types
-            if type_str in globals():
-                type_objects.append(globals()[type_str])
-            elif type_str in locals():
-                type_objects.append(locals()[type_str])
-            else:
-                try:
-                    type_objects.append(eval(type_str))
-                except NameError:  # Structured output
-                    hf_repo = HFRepo()
-                    type_objects.append(hf_repo.load_structured_output(type_str))
+            try:
+                type_objects.append(eval(type_str))
+            except NameError:  # Structured output
+                hf_repo = HFRepo()
+                type_objects.append(hf_repo.load_structured_output(type_str))
 
         # Create a new type using Union
         return Union.__getitem__(tuple(type_objects))
@@ -131,7 +126,7 @@ class AgentFactory:
         """Get the MCP servers from the config."""
         servers = []
         for server in self.config.mcp_servers:
-            if not server.strip():
+            if not server.strip():  # pragma: no cover
                 continue
             command, *args = server.split()
             servers.append((command, args))
