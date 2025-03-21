@@ -5,16 +5,12 @@ import json
 import os
 from collections.abc import Callable
 from types import ModuleType
-from typing import Literal
 from huggingface_hub import hf_hub_download
 from huggingface_hub import snapshot_download
 from huggingface_hub import upload_file
 from huggingface_hub.errors import LocalEntryNotFoundError
 from pydantic import BaseModel
 from extendable_agents.constants import HF_REPO_ID
-
-
-HFRepoFileTypes = Literal["function", "config", "structured_output"]
 
 
 class HFRepo:
@@ -27,6 +23,7 @@ class HFRepo:
 
     tools_dir: str = "tools"
     agents_dir: str = "agents"
+    pydantic_models_dir: str = "pydantic_models"
     repo_type: str = "space"
 
     def __init__(self, repo_id: str = HF_REPO_ID) -> None:
@@ -37,17 +34,20 @@ class HFRepo:
         """Download all files from the Hugging Face Hub."""
         snapshot_download(repo_id=self.repo_id, repo_type=self.repo_type)
 
-    def get_file_path(self, filename: str, file_type: HFRepoFileTypes) -> str:
+    def get_file_path(self, filename: str, subdir: str) -> str:
         """Get the local path to a file in the repo."""
-        match file_type:
-            case "function" | "structured_output":
+        match subdir:
+            case self.tools_dir:
                 extension = ".py"
                 subfolder = self.tools_dir
-            case "config":
+            case self.pydantic_models_dir:
+                extension = ".py"
+                subfolder = self.pydantic_models_dir
+            case self.agents_dir:
                 extension = ".json"
                 subfolder = self.agents_dir
             case _:
-                raise ValueError(f"Invalid type: {file_type}")
+                raise ValueError(f"Invalid subdir: {subdir}")
 
         filename = self._check_extension(filename, extension)
         try:
@@ -86,17 +86,17 @@ class HFRepo:
         """Load a config from the Hugging Face Hub."""
         if not filename:
             return {}
-        file_path = self.get_file_path(filename, "config")
+        file_path = self.get_file_path(filename, self.agents_dir)
 
         with open(file_path) as file:
             return json.load(file)
 
-    def load_tool(self, filename: str) -> Callable | type[BaseModel] | None:
+    def load_tool(self, filename: str) -> Callable | None:
         """Load a tool from the Hugging Face Hub."""
         if not filename:
             return None
         name_without_extension = filename.split(".")[0]
-        file_path = self.get_file_path(filename, "function")
+        file_path = self.get_file_path(filename, self.tools_dir)
         module = self._load_module(name_without_extension, file_path)
         func = getattr(module, name_without_extension)
         assert callable(func)
@@ -107,7 +107,10 @@ class HFRepo:
         """Load a structured output from the Hugging Face Hub."""
         if not filename:
             return None
-        model = self.load_tool(filename)
+        name_without_extension = filename.split(".")[0]
+        file_path = self.get_file_path(filename, self.pydantic_models_dir)
+        module = self._load_module(name_without_extension, file_path)
+        model = getattr(module, name_without_extension)
         assert isinstance(model, type) and issubclass(model, BaseModel)
 
         return model
@@ -116,24 +119,24 @@ class HFRepo:
         self,
         filename: str,
         content: str,
-        file_type: HFRepoFileTypes,
+        subdir: str,
     ) -> None:
         """Upload a file to the Hugging Face Hub."""
-        match file_type:
-            case "function" | "structured_output":
+        match subdir:
+            case self.tools_dir:
                 extension = ".py"
-                path_in_repo = self.tools_dir
-            case "config":
+            case self.pydantic_models_dir:
+                extension = ".py"
+            case self.agents_dir:
                 extension = ".json"
-                path_in_repo = self.agents_dir
             case _:
-                raise ValueError(f"Invalid type: {file_type}")
+                raise ValueError(f"Invalid type: {subdir}")
 
         filename = self._check_extension(filename, extension)
 
         upload_file(
             path_or_fileobj=content.encode("utf-8"),
-            path_in_repo=f"{path_in_repo}/{filename}",
+            path_in_repo=f"{subdir}/{filename}",
             repo_id=self.repo_id,
             repo_type=self.repo_type,
             commit_message=f"Update {filename}",

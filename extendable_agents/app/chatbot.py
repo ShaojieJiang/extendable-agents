@@ -13,7 +13,6 @@ from extendable_agents.agent import AgentModel
 from extendable_agents.app.app_state import AppState
 from extendable_agents.app.app_state import ensure_app_state
 from extendable_agents.dataclasses import ChatMessage
-from extendable_agents.hf_tools import hf_to_pai_tools
 
 
 load_dotenv()
@@ -78,22 +77,6 @@ def reset_chat_history(app_state: AppState) -> None:
     app_state.chat_history = []
 
 
-def get_hf_tools(app_state: AppState) -> None:
-    """Get Hugging Face tool names."""
-    user_input = st.sidebar.text_area(
-        "Hugging Face tool names, one per line",
-        value="NeuralNotwork/get-time",
-        height=100,
-    )
-    tool_names = [line.strip() for line in user_input.split("\n") if line.strip()]
-    for tool_name in tool_names:
-        try:
-            tool = hf_to_pai_tools(tool_name)
-            app_state.tools[tool.name] = tool
-        except Exception as e:
-            st.error(f"Error converting tool {tool_name}: {e}")
-
-
 def config_mcp_servers(app_state: AppState) -> None:
     """Configure MCP server."""
     servers = st.sidebar.text_area(
@@ -112,7 +95,6 @@ def config_mcp_servers(app_state: AppState) -> None:
 async def main(app_state: AppState) -> None:
     """Main function."""
     st.title("Extendable Agents")
-    get_hf_tools(app_state)
     config_mcp_servers(app_state)
     init_chat_history(app_state)
     display_chat_history(app_state)

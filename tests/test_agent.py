@@ -1,6 +1,6 @@
 from unittest.mock import Mock
 from unittest.mock import patch
-from extendable_agents.agent_config import AgentConfig
+from extendable_agents.agent import AgentConfig
 from extendable_agents.agent_config import MCPServerConfig
 
 
