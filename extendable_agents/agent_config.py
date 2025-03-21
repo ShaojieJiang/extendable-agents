@@ -1,7 +1,6 @@
 """Agent config."""
 
 from pydantic import BaseModel
-from extendable_agents.constants import HF_REPO_ID
 from extendable_agents.hub import HFRepo
 from extendable_agents.logging import get_logger
 
@@ -52,16 +51,16 @@ class AgentConfig(BaseModel):
     @classmethod
     def from_hub(cls, agent_name: str) -> "AgentConfig":
         """Load an agent config from Hugging Face Hub."""
-        repo = HFRepo(HF_REPO_ID)
+        repo = HFRepo()
         config_obj = repo.load_config(agent_name)
         return cls(**config_obj)
 
     def push_to_hub(self) -> None:
         """Upload a JSON file to Hugging Face Hub."""
-        repo = HFRepo(HF_REPO_ID)
+        repo = HFRepo()
 
         # Upload the file
-        repo.upload_file(
+        repo.upload_content(
             filename=self.name,
             content=self.model_dump_json(),
             file_type="config",

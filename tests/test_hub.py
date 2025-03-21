@@ -32,7 +32,7 @@ def test_init():
 @patch("extendable_agents.hub.snapshot_download")
 def test_load_files(mock_snapshot):
     repo = HFRepo("test-repo")
-    repo.load_files()
+    repo.download_files()
     mock_snapshot.assert_called_once_with(repo_id="test-repo", repo_type="space")
 
 
@@ -41,7 +41,7 @@ def test_load_file(mock_download):
     repo = HFRepo("test-repo")
     mock_download.side_effect = ["/path/to/file"]
 
-    result = repo._load_file("test.py", "function")
+    result = repo.get_file_path("test.py", "function")
     assert result == "/path/to/file"
     mock_download.assert_called_with(
         repo_id="test-repo",
@@ -56,7 +56,7 @@ def test_load_file_fallback(mock_download):
     repo = HFRepo("test-repo")
     mock_download.side_effect = LocalEntryNotFoundError("Test exception")
     with pytest.raises(LocalEntryNotFoundError):
-        repo._load_file("test.py", "function")
+        repo.get_file_path("test.py", "function")
 
 
 @patch("extendable_agents.hub.hf_hub_download")
@@ -107,12 +107,12 @@ def test_load_structured_output(mock_importlib, mock_download):
     assert issubclass(result, BaseModel)
 
 
-@patch("extendable_agents.hub.upload_file")
-def test_upload_file(mock_upload):
+@patch("extendable_agents.hub.upload_content")
+def test_upload_content(mock_upload):
     repo = HFRepo("test-repo")
 
     # Test function upload
-    repo.upload_file("test_func", "content", "function")
+    repo.upload_content("test_func", "content", "function")
     mock_upload.assert_called_with(
         path_or_fileobj="content",
         path_in_repo=f"{HFRepo.tools_dir}/test_func.py",
@@ -121,7 +121,7 @@ def test_upload_file(mock_upload):
     )
 
     # Test config upload
-    repo.upload_file("test_config", "content", "config")
+    repo.upload_content("test_config", "content", "config")
     mock_upload.assert_called_with(
         path_or_fileobj="content",
         path_in_repo=f"{HFRepo.agents_dir}/test_config.json",
@@ -133,4 +133,4 @@ def test_upload_file(mock_upload):
 def test_upload_file_invalid_type():
     repo = HFRepo("test-repo")
     with pytest.raises(ValueError):
-        repo.upload_file("test", "content", "invalid_type")  # type: ignore
+        repo.upload_content("test", "content", "invalid_type")  # type: ignore

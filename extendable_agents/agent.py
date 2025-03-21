@@ -2,10 +2,6 @@
 
 from pydantic_ai import Agent
 from pydantic_ai import Tool
-from pydantic_ai.mcp import MCPServerStdio
-from pydantic_ai.models import ModelSettings
-from extendable_agents.hub import ToolsHub
-from extendable_agents.tools import load_code_as_module
 
 
 class AgentModel:
@@ -42,34 +38,35 @@ class AgentModel:
 
     def get_pydantic_agent(self, model: str, hf_tools: list[Tool]) -> Agent:
         """Get the agent config from DB and convert to Pydantic agent."""
-        tools = []
-        if self.function_tools:
-            tools_hub = ToolsHub()
-            for tool_name in self.function_tools:
-                function_code = tools_hub.get_file_from_github(tool_name)
-                if not function_code:
-                    continue
-                module = load_code_as_module(function_code)
-                tools.append(getattr(module, tool_name))
+        return Agent(model=model, name=self.name, system_prompt=self.system_prompt)  # type: ignore[arg-type]
+        # tools = []
+        # if self.function_tools:
+        #     tools_hub = ToolsHub()
+        #     for tool_name in self.function_tools:
+        #         function_code = tools_hub.get_file_from_github(tool_name)
+        #         if not function_code:
+        #             continue
+        #         module = load_code_as_module(function_code)
+        #         tools.append(getattr(module, tool_name))
 
-        model_settings = self.model_settings or {}
+        # model_settings = self.model_settings or {}
 
-        if self.mcp_servers:
-            servers = [
-                MCPServerStdio(command, args) for command, args in self.mcp_servers
-            ]
-            return Agent(
-                model=model or self.model,  # type: ignore[arg-type]
-                name=self.name,
-                system_prompt=self.system_prompt,
-                model_settings=ModelSettings(**model_settings),
-                tools=tools + hf_tools,
-                mcp_servers=servers,
-            )
-        return Agent(
-            model=model or self.model,  # type: ignore[arg-type]
-            name=self.name,
-            system_prompt=self.system_prompt,
-            model_settings=ModelSettings(**model_settings),
-            tools=tools + hf_tools,
-        )
+        # if self.mcp_servers:
+        #     servers = [
+        #         MCPServerStdio(command, args) for command, args in self.mcp_servers
+        #     ]
+        #     return Agent(
+        #         model=model or self.model,  # type: ignore[arg-type]
+        #         name=self.name,
+        #         system_prompt=self.system_prompt,
+        #         model_settings=ModelSettings(**model_settings),
+        #         tools=tools + hf_tools,
+        #         mcp_servers=servers,
+        #     )
+        # return Agent(
+        #     model=model or self.model,  # type: ignore[arg-type]
+        #     name=self.name,
+        #     system_prompt=self.system_prompt,
+        #     model_settings=ModelSettings(**model_settings),
+        #     tools=tools + hf_tools,
+        # )

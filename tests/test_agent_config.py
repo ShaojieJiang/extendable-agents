@@ -64,7 +64,7 @@ def test_push_to_hub(mock_hf_repo):
 
     config.push_to_hub()
 
-    mock_repo.upload_file.assert_called_once()
-    args = mock_repo.upload_file.call_args[1]
+    mock_repo.upload_content.assert_called_once()
+    args = mock_repo.upload_content.call_args[1]
     assert args["filename"] == "TestAgent"
     assert args["file_type"] == "config"
