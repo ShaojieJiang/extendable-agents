@@ -4,6 +4,7 @@ from unittest.mock import mock_open
 from unittest.mock import patch
 import pytest
 from pydantic import BaseModel
+from extendable_agents.constants import HF_TOKEN
 from extendable_agents.hub import HFRepo
 
 
@@ -32,7 +33,9 @@ def test_init():
 def test_load_files(mock_snapshot):
     repo = HFRepo("test-repo")
     repo.download_files()
-    mock_snapshot.assert_called_once_with(repo_id="test-repo", repo_type="space")
+    mock_snapshot.assert_called_once_with(
+        repo_id="test-repo", repo_type="space", token=HF_TOKEN
+    )
 
 
 @patch("extendable_agents.hub.hf_hub_download")
@@ -114,6 +117,7 @@ def test_upload_content():
                 repo_id=repo.repo_id,
                 repo_type=repo.repo_type,
                 commit_message=f"Update {filename}{extension}",
+                token=HF_TOKEN,
             )
 
             # Verify download_files was called
@@ -143,6 +147,7 @@ def test_upload_content_with_extension():
             repo_id=repo.repo_id,
             repo_type=repo.repo_type,
             commit_message="Update test_tool.py",
+            token=HF_TOKEN,
         )
 
 

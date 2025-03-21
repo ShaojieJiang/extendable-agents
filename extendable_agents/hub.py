@@ -10,6 +10,7 @@ from huggingface_hub import snapshot_download
 from huggingface_hub import upload_file
 from pydantic import BaseModel
 from extendable_agents.constants import HF_REPO_ID
+from extendable_agents.constants import HF_TOKEN
 
 
 class HFRepo:
@@ -31,7 +32,11 @@ class HFRepo:
 
     def download_files(self) -> None:
         """Download all files from the Hugging Face Hub."""
-        snapshot_download(repo_id=self.repo_id, repo_type=self.repo_type)
+        snapshot_download(
+            repo_id=self.repo_id,
+            repo_type=self.repo_type,
+            token=HF_TOKEN,
+        )
 
     def get_file_path(self, filename: str, subdir: str) -> str:
         """Get the local path to a file in the repo."""
@@ -55,6 +60,7 @@ class HFRepo:
             subfolder=subfolder,
             local_files_only=True,
             repo_type=self.repo_type,
+            token=HF_TOKEN,
         )
         return file_path
 
@@ -131,6 +137,7 @@ class HFRepo:
             repo_id=self.repo_id,
             repo_type=self.repo_type,
             commit_message=f"Update {filename}",
+            token=HF_TOKEN,
         )
         self.download_files()  # Make sure local files are updated
 

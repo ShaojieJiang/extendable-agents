@@ -38,7 +38,7 @@ dependencies = [
 ]
 description = "An Agentic platform that allows you to define extensions"
 license = {file = "LICENSE"}
-name = "extendable-agent"
+name = "extendable-agents"
 readme = "README.md"
 requires-python = ">=3.12"
 version = "0.0.2"
