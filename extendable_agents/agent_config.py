@@ -21,20 +21,34 @@ class AgentConfig(BaseModel):
     """Configuration class for Agent initialization."""
 
     model: str
-    # result_type: Any = str
+    """Model name. Must be a valid pydantic_ai.models.KnownModelName."""
+    result_type: list[str] = ["str"]
+    """Result type. Can be name of Python primitives or a list of HF Hub file names."""
     system_prompt: str = "You are a helpful assistant."
+    """System prompt for the agent."""
     # deps_type: type[AgentDepsT] = (NoneType,)
     name: str = "Agent"
+    """Name of the agent."""
     model_settings: dict | None = None
+    """Model settings for the agent."""
     retries: int = 1
+    """Number of retries for the agent."""
     result_tool_name: str = "final_result"
+    """Name of the result tool."""
     result_tool_description: str | None = None
+    """Description of the result tool."""
     result_retries: int | None = None
+    """Number of retries for the result tool."""
     tools: list[str] = []
+    """List of tools for the agent."""
     mcp_servers: list[MCPServerConfig] = []
+    """List of MCP servers for the agent."""
     defer_model_check: bool = False
+    """Whether to defer model check for the agent."""
     end_strategy: str = "early"
-    version: str = "0.0.1"
+    """End strategy for the agent."""
+    config_version: str = "0.0.1"
+    """Version of the agent config."""
 
     @classmethod
     def from_hub(cls, repo_id: str) -> "AgentConfig":
