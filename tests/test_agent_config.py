@@ -54,17 +54,17 @@ def test_from_hub(mock_hf_repo):
     mock_repo.load_config.assert_called_with("agent")
 
 
-@patch("extendable_agents.agent_config.HfApi")
-def test_push_to_hub(mock_hf_api):
+@patch("extendable_agents.agent_config.HFRepo")
+def test_push_to_hub(mock_hf_repo):
     """Test pushing config to Hugging Face Hub."""
-    mock_api = Mock()
-    mock_hf_api.return_value = mock_api
+    mock_repo = Mock()
+    mock_hf_repo.return_value = mock_repo
 
     config = AgentConfig(model="openai:gpt-4o", name="TestAgent")
 
-    config.push_to_hub("test/repo")
+    config.push_to_hub()
 
-    mock_api.upload_file.assert_called_once()
-    args = mock_api.upload_file.call_args[1]
-    assert args["path_in_repo"] == "agent.json"
-    assert args["repo_id"] == "test/repo"
+    mock_repo.upload_file.assert_called_once()
+    args = mock_repo.upload_file.call_args[1]
+    assert args["filename"] == "TestAgent"
+    assert args["file_type"] == "config"

@@ -1,6 +1,5 @@
 """Agent config."""
 
-from huggingface_hub import HfApi
 from pydantic import BaseModel
 from extendable_agents.constants import HF_REPO_ID
 from extendable_agents.hub import HFRepo
@@ -57,13 +56,13 @@ class AgentConfig(BaseModel):
         config_obj = repo.load_config(agent_name)
         return cls(**config_obj)
 
-    def push_to_hub(self, repo_id: str) -> None:
+    def push_to_hub(self) -> None:
         """Upload a JSON file to Hugging Face Hub."""
-        api = HfApi()
+        repo = HFRepo(HF_REPO_ID)
 
         # Upload the file
-        api.upload_file(
-            path_or_fileobj=self.model_dump_json(),
-            path_in_repo="agent.json",
-            repo_id=repo_id,
+        repo.upload_file(
+            filename=self.name,
+            content=self.model_dump_json(),
+            file_type="config",
         )

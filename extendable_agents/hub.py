@@ -46,7 +46,7 @@ class HFRepo:
                 subfolder = self.tools_dir
             case "config":
                 subfolder = self.agents_dir
-            case _:
+            case _:  # pragma: no cover
                 raise ValueError(f"Invalid type: {file_type}")
         try:
             file_path = hf_hub_download(
