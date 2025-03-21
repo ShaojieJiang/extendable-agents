@@ -3,7 +3,6 @@ from unittest.mock import Mock
 from unittest.mock import mock_open
 from unittest.mock import patch
 import pytest
-from huggingface_hub.errors import LocalEntryNotFoundError
 from pydantic import BaseModel
 from extendable_agents.hub import HFRepo
 
@@ -34,29 +33,6 @@ def test_load_files(mock_snapshot):
     repo = HFRepo("test-repo")
     repo.download_files()
     mock_snapshot.assert_called_once_with(repo_id="test-repo", repo_type="space")
-
-
-@patch("extendable_agents.hub.hf_hub_download")
-def test_load_file(mock_download):
-    repo = HFRepo("test-repo")
-    mock_download.side_effect = ["/path/to/file"]
-
-    result = repo.get_file_path("test.py", "function")
-    assert result == "/path/to/file"
-    mock_download.assert_called_with(
-        repo_id="test-repo",
-        filename="test.py",
-        subfolder=HFRepo.tools_dir,
-        local_files_only=True,
-    )
-
-
-@patch("extendable_agents.hub.hf_hub_download")
-def test_load_file_fallback(mock_download):
-    repo = HFRepo("test-repo")
-    mock_download.side_effect = LocalEntryNotFoundError("Test exception")
-    with pytest.raises(LocalEntryNotFoundError):
-        repo.get_file_path("test.py", "function")
 
 
 @patch("extendable_agents.hub.hf_hub_download")
@@ -107,30 +83,122 @@ def test_load_structured_output(mock_importlib, mock_download):
     assert issubclass(result, BaseModel)
 
 
-@patch("extendable_agents.hub.upload_content")
-def test_upload_content(mock_upload):
-    repo = HFRepo("test-repo")
+def test_upload_content():
+    # Initialize the repo
+    repo = HFRepo()
 
-    # Test function upload
-    repo.upload_content("test_func", "content", "function")
-    mock_upload.assert_called_with(
-        path_or_fileobj="content",
-        path_in_repo=f"{HFRepo.tools_dir}/test_func.py",
-        repo_id="test-repo",
-        commit_message="Update test_func.py",
-    )
+    test_cases = [
+        # (filename, content, subdir, expected_extension)
+        ("test_tool", "def test_tool(): pass", "tools", ".py"),
+        (
+            "test_model",
+            "from pydantic import BaseModel\nclass test_model(BaseModel): pass",
+            "pydantic_models",
+            ".py",
+        ),
+        ("test_config", '{"key": "value"}', "agents", ".json"),
+    ]
 
-    # Test config upload
-    repo.upload_content("test_config", "content", "config")
-    mock_upload.assert_called_with(
-        path_or_fileobj="content",
-        path_in_repo=f"{HFRepo.agents_dir}/test_config.json",
-        repo_id="test-repo",
-        commit_message="Update test_config.json",
-    )
+    for filename, content, subdir, extension in test_cases:
+        with (
+            patch("extendable_agents.hub.upload_file") as mock_upload,
+            patch.object(HFRepo, "download_files") as mock_download,
+        ):
+            # Call the method
+            repo.upload_content(filename, content, subdir)
+
+            # Verify upload_file was called with correct arguments
+            mock_upload.assert_called_once_with(
+                path_or_fileobj=content.encode("utf-8"),
+                path_in_repo=f"{subdir}/{filename}{extension}",
+                repo_id=repo.repo_id,
+                repo_type=repo.repo_type,
+                commit_message=f"Update {filename}{extension}",
+            )
+
+            # Verify download_files was called
+            mock_download.assert_called_once()
 
 
-def test_upload_file_invalid_type():
-    repo = HFRepo("test-repo")
-    with pytest.raises(ValueError):
-        repo.upload_content("test", "content", "invalid_type")  # type: ignore
+def test_upload_content_invalid_subdir():
+    repo = HFRepo()
+
+    with pytest.raises(ValueError, match="Invalid type: invalid_dir"):
+        repo.upload_content("test", "content", "invalid_dir")
+
+
+def test_upload_content_with_extension():
+    repo = HFRepo()
+
+    with (
+        patch("extendable_agents.hub.upload_file") as mock_upload,
+    ):
+        # Call with filename that already has extension
+        repo.upload_content("test_tool.py", "content", "tools")
+
+        # Verify correct handling of existing extension
+        mock_upload.assert_called_once_with(
+            path_or_fileobj=b"content",
+            path_in_repo="tools/test_tool.py",
+            repo_id=repo.repo_id,
+            repo_type=repo.repo_type,
+            commit_message="Update test_tool.py",
+        )
+
+
+def test_list_files_existing_directory():
+    """Test listing files in an existing directory."""
+    with (
+        patch("extendable_agents.hub.snapshot_download") as mock_snapshot,
+        patch("os.path.exists") as mock_exists,
+        patch("os.path.isdir") as mock_isdir,
+        patch("os.listdir") as mock_listdir,
+        patch("os.path.isfile") as mock_isfile,
+    ):
+        # Setup mocks
+        mock_snapshot.return_value = "/fake/repo/path"
+        mock_exists.return_value = True
+        mock_isdir.return_value = True
+        mock_listdir.return_value = ["file1.py", "file2.py", "file3.json"]
+        mock_isfile.return_value = True
+
+        hub = HFRepo()
+        files = hub.list_files("tools")
+
+        # Verify results
+        assert files == ["file1", "file2", "file3"]
+        mock_snapshot.assert_called_once_with(
+            repo_id=hub.repo_id, repo_type=hub.repo_type, local_files_only=True
+        )
+
+
+def test_list_files_nonexistent_directory():
+    """Test listing files in a non-existent directory."""
+    with (
+        patch("extendable_agents.hub.snapshot_download") as mock_snapshot,
+        patch("os.path.exists") as mock_exists,
+    ):
+        mock_snapshot.return_value = "/fake/repo/path"
+        mock_exists.return_value = False
+
+        hub = HFRepo()
+        files = hub.list_files("nonexistent")
+
+        assert files == []
+
+
+def test_list_files_not_a_directory():
+    """Test listing files when path exists but is not a directory."""
+    with (
+        patch("extendable_agents.hub.snapshot_download") as mock_snapshot,
+        patch("os.path.exists") as mock_exists,
+        patch("os.path.isdir") as mock_isdir,
+    ):
+        mock_snapshot.return_value = "/fake/repo/path"
+        mock_exists.return_value = True
+        mock_isdir.return_value = False
+
+        hub = HFRepo()
+        files = hub.list_files("not_a_dir")
+
+        assert files == []

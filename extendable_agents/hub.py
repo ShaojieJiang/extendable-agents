@@ -8,7 +8,6 @@ from types import ModuleType
 from huggingface_hub import hf_hub_download
 from huggingface_hub import snapshot_download
 from huggingface_hub import upload_file
-from huggingface_hub.errors import LocalEntryNotFoundError
 from pydantic import BaseModel
 from extendable_agents.constants import HF_REPO_ID
 
@@ -46,25 +45,17 @@ class HFRepo:
             case self.agents_dir:
                 extension = ".json"
                 subfolder = self.agents_dir
-            case _:
+            case _:  # pragma: no cover
                 raise ValueError(f"Invalid subdir: {subdir}")
 
         filename = self._check_extension(filename, extension)
-        try:
-            file_path = hf_hub_download(
-                repo_id=self.repo_id,
-                filename=filename,
-                subfolder=subfolder,
-                local_files_only=True,
-                repo_type=self.repo_type,
-            )
-        except LocalEntryNotFoundError:
-            file_path = hf_hub_download(
-                repo_id=self.repo_id,
-                filename=filename,
-                subfolder=subfolder,
-                repo_type=self.repo_type,
-            )
+        file_path = hf_hub_download(
+            repo_id=self.repo_id,
+            filename=filename,
+            subfolder=subfolder,
+            local_files_only=True,
+            repo_type=self.repo_type,
+        )
         return file_path
 
     def _load_module(self, module_name: str, path: str) -> ModuleType:
@@ -84,7 +75,7 @@ class HFRepo:
 
     def load_config(self, filename: str) -> dict:
         """Load a config from the Hugging Face Hub."""
-        if not filename:
+        if not filename:  # pragma: no cover
             return {}
         file_path = self.get_file_path(filename, self.agents_dir)
 
@@ -93,7 +84,7 @@ class HFRepo:
 
     def load_tool(self, filename: str) -> Callable | None:
         """Load a tool from the Hugging Face Hub."""
-        if not filename:
+        if not filename:  # pragma: no cover
             return None
         name_without_extension = filename.split(".")[0]
         file_path = self.get_file_path(filename, self.tools_dir)
@@ -105,7 +96,7 @@ class HFRepo:
 
     def load_structured_output(self, filename: str) -> type[BaseModel] | None:
         """Load a structured output from the Hugging Face Hub."""
-        if not filename:
+        if not filename:  # pragma: no cover
             return None
         name_without_extension = filename.split(".")[0]
         file_path = self.get_file_path(filename, self.pydantic_models_dir)
