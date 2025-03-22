@@ -7,6 +7,7 @@ from pydantic_ai import Agent
 from pydantic_ai import Tool
 from extendable_agents.agent import AgentConfig
 from extendable_agents.agent import AgentFactory
+from extendable_agents.agent import MCPServerStdio
 
 
 def test_agent_config_initialization():
@@ -179,8 +180,8 @@ def test_get_tools(mock_hf_repo, agent_factory):
 def test_get_mcp_servers(agent_factory):
     servers = agent_factory.get_mcp_servers()
     assert len(servers) == 2
-    assert servers[0] == ("command1", ["arg1", "arg2"])
-    assert servers[1] == ("command2", [])
+    assert servers[0] == MCPServerStdio("command1", ["arg1", "arg2"])
+    assert servers[1] == MCPServerStdio("command2", [])
 
 
 @patch("extendable_agents.agent.OpenAIProvider")
