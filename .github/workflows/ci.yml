@@ -9,6 +9,9 @@ on:
   pull_request:
     branches:
       - main
+    types:
+    - opened
+    - synchronize
 
 # Add these permissions at the workflow level
 permissions:
@@ -80,6 +83,7 @@ jobs:
       # - run: uv run diff-cover coverage.xml --fail-under 100
 
   build-and-release:
+    if: github.event.pull_request.draft == false
     runs-on: ubuntu-latest
 
     steps:
