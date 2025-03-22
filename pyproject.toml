@@ -5,6 +5,7 @@ requires = ["hatchling"]
 [dependency-groups]
 dev = [
   "bump2version",
+  "diff-cover>=9.2.4",
   "isort",
   "mypy==1.11.2",
   "pre-commit",
@@ -12,6 +13,7 @@ dev = [
   "pytest-asyncio==0.23.8",
   "pytest-cov==4.1.0",
   "ruff>=0.11.0",
+  "smokeshow>=0.5.0",
   "types-requests"
 ]
 docs = [
