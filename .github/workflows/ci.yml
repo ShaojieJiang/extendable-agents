@@ -61,7 +61,7 @@ jobs:
 
       - name: Run unit tests with coverage
         run: |
-          uv run pytest
+          uv run coverage run -m pytest
           uv run coverage html --show-contexts --title "Extendable Agents Coverage for ${{ github.sha }}"
           uv run coverage xml
           uv run diff-cover coverage.xml --html-report index.html
