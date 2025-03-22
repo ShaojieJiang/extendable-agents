@@ -84,20 +84,21 @@ jobs:
       # - run: uv run coverage report --fail-under 95
       # - run: uv run diff-cover coverage.xml --fail-under 100
 
-  # build-and-release:
-  #   if: startsWith(github.ref, 'refs/tags/')
-  #   runs-on: ubuntu-latest
+  build-and-release:
+    needs: [lint, coverage]
+    if: "success() && startsWith(github.ref, 'refs/tags/')"
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - uses: actions/checkout@v4
-  #     - uses: yezz123/setup-uv@v4
+    steps:
+      - uses: actions/checkout@v4
+      - uses: yezz123/setup-uv@v4
 
-  #     - name: Build project
-  #       run: uv build
+      - name: Build project
+        run: uv build
 
-  #     - name: Upload release artifacts
-  #       uses: softprops/action-gh-release@v2
-  #       env:
-  #         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  #       with:
-  #         files: dist/*
+      - name: Upload release artifacts
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          files: dist/*
