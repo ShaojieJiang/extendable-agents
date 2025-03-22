@@ -7,6 +7,7 @@ from pydantic import BaseModel
 from pydantic_ai import Agent
 from pydantic_ai import Tool
 from pydantic_ai.agent import ModelSettings
+from pydantic_ai.mcp import MCPServerStdio
 from pydantic_ai.models.openai import OpenAIModel
 from pydantic_ai.providers.openai import OpenAIProvider
 from smolagents import load_tool
@@ -122,14 +123,14 @@ class AgentFactory:
             tools.append(self.hf_to_pai_tools(tool_name))
         return tools
 
-    def get_mcp_servers(self) -> list[tuple[str, list[str]]]:
+    def get_mcp_servers(self) -> list[MCPServerStdio]:
         """Get the MCP servers from the config."""
         servers = []
         for server in self.config.mcp_servers:
             if not server.strip():  # pragma: no cover
                 continue
             command, *args = server.split()
-            servers.append((command, args))
+            servers.append(MCPServerStdio(command, args))
         return servers
 
     def create_agent(self, api_key: str) -> Agent:
