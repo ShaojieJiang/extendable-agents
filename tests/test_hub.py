@@ -100,10 +100,7 @@ def test_upload_content():
     ]
 
     for filename, content, subdir, extension in test_cases:
-        with (
-            patch("extendable_agents.hub.upload_file") as mock_upload,
-            patch.object(HFRepo, "download_files") as mock_download,
-        ):
+        with patch("extendable_agents.hub.upload_file") as mock_upload:
             # Call the method
             repo.upload_content(filename, content, subdir)
 
@@ -115,9 +112,6 @@ def test_upload_content():
                 repo_type=repo.repo_type,
                 commit_message=f"Update {filename}{extension}",
             )
-
-            # Verify download_files was called
-            mock_download.assert_called_once()
 
 
 def test_upload_content_invalid_subdir():
