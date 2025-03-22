@@ -135,7 +135,6 @@ class HFRepo:
             repo_type=self.repo_type,
             commit_message=f"Update {filename}",
         )
-        self.download_files()  # Make sure local files are updated
 
     def list_files(self, subdir: str) -> list[str]:
         """List all files in the Hugging Face Hub."""
