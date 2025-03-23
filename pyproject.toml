@@ -32,11 +32,10 @@ dependencies = [
   "huggingface-hub>=0.29.3",
   "pydantic>=2.10.6",
   "pydantic-ai>=0.0.42",
-  "pydantic-ai-slim[mcp]>=0.0.42",
-  "pygithub>=2.6.1",
   "smolagents>=1.11.0",
   "streamlit>=1.43.2",
-  "streamlit-code-editor>=0.1.22"
+  "streamlit-code-editor>=0.1.22",
+  "aic-core>=0.0.1"
 ]
 description = "An Agentic platform that allows you to define extensions"
 license = {file = "LICENSE"}
@@ -57,6 +56,9 @@ exclude_lines = [
 branch = true
 command_line = "-m pytest"
 source = ["extendable_agents"]
+
+[tool.hatch.metadata]
+allow-direct-references = true
 
 [tool.mypy]
 disallow_untyped_defs = true
