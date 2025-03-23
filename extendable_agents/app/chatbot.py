@@ -3,16 +3,17 @@
 import asyncio
 import os
 import streamlit as st
+from aic_core.agent import AgentConfig
+from aic_core.agent import AgentFactory
 from pydantic_ai import Agent
 from pydantic_ai.messages import ModelRequest
 from pydantic_ai.messages import ModelResponse
 from pydantic_ai.messages import TextPart
 from pydantic_ai.messages import UserPromptPart
-from extendable_agents.agent import AgentConfig
-from extendable_agents.agent import AgentFactory
 from extendable_agents.app.app_state import AppState
 from extendable_agents.app.app_state import ensure_app_state
 from extendable_agents.app.shared_components import agent_selector
+from extendable_agents.constants import HF_REPO_ID
 from extendable_agents.dataclasses import ChatMessage
 
 
@@ -55,7 +56,7 @@ def get_agent() -> Agent:
         os.environ["OPENAI_API_KEY"] = openai_api_key
 
     agent_name = agent_selector()
-    agent_config = AgentConfig.from_hub(agent_name)
+    agent_config = AgentConfig.from_hub(HF_REPO_ID, agent_name)
     agent_factory = AgentFactory(agent_config)
     agent = agent_factory.create_agent(api_key=openai_api_key)
 

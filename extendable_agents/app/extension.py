@@ -1,18 +1,19 @@
 """Extension page."""
 
 import streamlit as st
+from aic_core.agent_hub import AgentHub
 from code_editor import code_editor
 from pydantic import BaseModel
 from extendable_agents.app.shared_components import function_selector
-from extendable_agents.hub import HFRepo
+from extendable_agents.constants import HF_REPO_ID
 from extendable_agents.tools import load_code_as_module
 
 
 def edit_function(function_name: str) -> None:
     """Edit function."""
-    hf_repo = HFRepo()
+    hf_repo = AgentHub(HF_REPO_ID)
     if function_name:
-        file_path = hf_repo.get_file_path(function_name, HFRepo.tools_dir)
+        file_path = hf_repo.get_file_path(function_name, AgentHub.tools_dir)
         with open(file_path) as f:
             default_code = f.read()
     else:
@@ -46,11 +47,11 @@ def edit_function(function_name: str) -> None:
                 # Upload the code to Tools Hub
                 if isinstance(func, type) and issubclass(func, BaseModel):
                     hf_repo.upload_content(
-                        function_name, code["text"], HFRepo.pydantic_models_dir
+                        function_name, code["text"], AgentHub.pydantic_models_dir
                     )
                 else:
                     hf_repo.upload_content(
-                        function_name, code["text"], HFRepo.tools_dir
+                        function_name, code["text"], AgentHub.tools_dir
                     )
                 st.success(f"Function `{function_name}` saved successfully!")
             except AssertionError:

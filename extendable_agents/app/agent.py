@@ -2,18 +2,19 @@
 
 from typing import get_args
 import streamlit as st
+from aic.agent import AgentConfig
+from aic.agent_hub import AgentHub
 from pydantic_ai.models import KnownModelName
-from extendable_agents.agent import AgentConfig
 from extendable_agents.app.shared_components import agent_selector
 from extendable_agents.app.shared_components import list_function_names
-from extendable_agents.hub import HFRepo
+from extendable_agents.constants import HF_REPO_ID
 
 
 def list_result_type_options() -> list[str]:
     """List all result types."""
     primitive_types = ["str", "int", "float", "bool"]
-    hf_repo = HFRepo()
-    return primitive_types + hf_repo.list_files(HFRepo.pydantic_models_dir)
+    hf_repo = AgentHub(HF_REPO_ID)
+    return primitive_types + hf_repo.list_files(AgentHub.pydantic_models_dir)
 
 
 def configure(config: AgentConfig) -> AgentConfig:
@@ -90,6 +91,7 @@ def configure(config: AgentConfig) -> AgentConfig:
         defer_model_check=defer_model_check,
         end_strategy=end_strategy,
         name=name,
+        repo_id=HF_REPO_ID,
     )
 
 
@@ -98,9 +100,9 @@ def main() -> None:
     st.title("Custom Agent")
     agent_name = agent_selector()
     if agent_name:
-        config = AgentConfig.from_hub(agent_name)
+        config = AgentConfig.from_hub(HF_REPO_ID, agent_name)
     else:  # Initialize a new agent
-        config = AgentConfig(model="openai:gpt-4o")
+        config = AgentConfig(model="openai:gpt-4o", repo_id=HF_REPO_ID)
     new_config = configure(config)
     st.write(new_config)
     if st.button("Save", on_click=new_config.push_to_hub):
