@@ -2,8 +2,8 @@
 
 from typing import get_args
 import streamlit as st
-from aic.agent import AgentConfig
-from aic.agent_hub import AgentHub
+from aic_core.agent import AgentConfig
+from aic_core.agent_hub import AgentHub
 from pydantic_ai.models import KnownModelName
 from extendable_agents.app.shared_components import agent_selector
 from extendable_agents.app.shared_components import list_function_names
