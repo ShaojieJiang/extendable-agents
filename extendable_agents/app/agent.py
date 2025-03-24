@@ -74,7 +74,7 @@ def configure(config: AgentConfig) -> AgentConfig:
     mcp_servers = st.text_area("MCP servers", value="\n".join(config.mcp_servers))
     defer_model_check = st.toggle("Defer model check", value=config.defer_model_check)
     end_strategy = st.selectbox("End strategy", ["early", "exhaustive"])
-    name = st.text_input("Name", value="Agent")
+    name = st.text_input("Name", value=config.name)
 
     return AgentConfig(
         model=model,
@@ -104,7 +104,6 @@ def main() -> None:
     else:  # Initialize a new agent
         config = AgentConfig(model="openai:gpt-4o", repo_id=HF_REPO_ID)
     new_config = configure(config)
-    st.write(new_config)
     if st.button("Save", on_click=new_config.push_to_hub):
         st.success("Agent pushed to the hub.")
 
