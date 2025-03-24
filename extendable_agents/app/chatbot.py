@@ -52,8 +52,6 @@ def get_agent() -> Agent:
     openai_api_key = st.sidebar.text_input(
         "OpenAI API Key", type="password", value=os.getenv("OPENAI_API_KEY", "")
     )
-    if openai_api_key:
-        os.environ["OPENAI_API_KEY"] = openai_api_key
 
     agent_name = agent_selector()
     agent_config = AgentConfig.from_hub(HF_REPO_ID, agent_name)
