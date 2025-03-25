@@ -5,7 +5,7 @@ requires-python = ">=3.12"
 [[package]]
 name = "aic-core"
 version = "0.0.1"
-source = { git = "https://github.com/ShaojieJiang/aic-core#5bd08635db77f7710c544d1e4113878670fa63e7" }
+source = { git = "https://github.com/ShaojieJiang/aic-core#42211d2947e537a16e52b4df20fe290641f67245" }
 dependencies = [
     { name = "httpx" },
     { name = "huggingface-hub" },

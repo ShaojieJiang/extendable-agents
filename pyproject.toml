@@ -27,7 +27,7 @@ docs = [
 [project]
 authors = [{name = "Shaojie Jiang", email = "shaojie.jiang1@gmail.com"}]
 dependencies = [
-  "aic-core>=0.0.1",
+  "aic-core",
   "dotenv>=0.9.9",
   "httpx>=0.28.1",
   "huggingface-hub>=0.29.3",
