@@ -27,6 +27,7 @@ docs = [
 [project]
 authors = [{name = "Shaojie Jiang", email = "shaojie.jiang1@gmail.com"}]
 dependencies = [
+  "aic-core>=0.0.1",
   "dotenv>=0.9.9",
   "httpx>=0.28.1",
   "huggingface-hub>=0.29.3",
@@ -34,8 +35,7 @@ dependencies = [
   "pydantic-ai>=0.0.42",
   "smolagents>=1.11.0",
   "streamlit>=1.43.2",
-  "streamlit-code-editor>=0.1.22",
-  "aic-core>=0.0.1"
+  "streamlit-code-editor>=0.1.22"
 ]
 description = "An Agentic platform that allows you to define extensions"
 license = {file = "LICENSE"}
@@ -112,3 +112,6 @@ max-complexity = 10
 
 [tool.ruff.lint.pydocstyle]
 convention = "google"
+
+[tool.uv.sources]
+aic-core = {git = "https://github.com/ShaojieJiang/aic-core"}

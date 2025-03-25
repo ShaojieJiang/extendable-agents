@@ -5,17 +5,13 @@ requires-python = ">=3.12"
 [[package]]
 name = "aic-core"
 version = "0.0.1"
-source = { registry = "https://pypi.org/simple" }
+source = { git = "https://github.com/ShaojieJiang/aic-core#5bd08635db77f7710c544d1e4113878670fa63e7" }
 dependencies = [
     { name = "httpx" },
     { name = "huggingface-hub" },
     { name = "pydantic" },
     { name = "pydantic-ai" },
     { name = "smolagents" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/5b/e8/ae34efca87eb952d66932eff4bc28f042782af3cc3629f7cc6fca1f52f75/aic_core-0.0.1.tar.gz", hash = "sha256:0eb71a86ea9d9ce87c244a8afd2bea0e7092d7eccac4621c196283406283ee36", size = 96049 }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/d5/ec/1637af7810ab0aaf45a057254789af1652e9bf2473485210bce110def76a/aic_core-0.0.1-py3-none-any.whl", hash = "sha256:8beda8dec0ce477ff703f107fa36238c0f6abc00078d769fba0aa45e0e137ed3", size = 6364 },
 ]
 
 [[package]]
@@ -555,7 +551,7 @@ docs = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aic-core", specifier = ">=0.0.1" },
+    { name = "aic-core", git = "https://github.com/ShaojieJiang/aic-core" },
     { name = "dotenv", specifier = ">=0.9.9" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "huggingface-hub", specifier = ">=0.29.3" },
