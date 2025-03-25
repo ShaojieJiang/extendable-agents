@@ -95,6 +95,12 @@ def configure(config: AgentConfig) -> AgentConfig:
     )
 
 
+def save_config(config: AgentConfig) -> None:
+    """Save the config."""
+    config.push_to_hub()
+    AgentHub(HF_REPO_ID).download_files()
+
+
 def main() -> None:
     """Main function."""
     st.title("Custom Agent")
@@ -104,7 +110,7 @@ def main() -> None:
     else:  # Initialize a new agent
         config = AgentConfig(model="openai:gpt-4o", repo_id=HF_REPO_ID)
     new_config = configure(config)
-    if st.button("Save", on_click=new_config.push_to_hub):
+    if st.button("Save", on_click=save_config(new_config)):
         st.success("Agent pushed to the hub.")
 
 
