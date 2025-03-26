@@ -33,9 +33,7 @@ dependencies = [
   "huggingface-hub>=0.29.3",
   "pydantic>=2.10.6",
   "pydantic-ai>=0.0.42",
-  "smolagents>=1.11.0",
-  "streamlit>=1.43.2",
-  "streamlit-code-editor>=0.1.22"
+  "streamlit>=1.43.2"
 ]
 description = "An Agentic platform that allows you to define extensions"
 license = {file = "LICENSE"}
@@ -114,4 +112,4 @@ max-complexity = 10
 convention = "google"
 
 [tool.uv.sources]
-aic-core = {git = "https://github.com/ShaojieJiang/aic-core"}
+aic-core = {git = "https://github.com/ShaojieJiang/aic-core", branch = "feature/AIC-89-add-standard-streamlit-pages"}
