@@ -5,7 +5,7 @@ requires-python = ">=3.12"
 [[package]]
 name = "aic-core"
 version = "0.0.1"
-source = { git = "https://github.com/ShaojieJiang/aic-core?branch=feature%2FAIC-89-add-standard-streamlit-pages#18d5f7f7d70585ca8e399c23c434d914d4f897fe" }
+source = { git = "https://github.com/ShaojieJiang/aic-core?branch=feature%2FAIC-89-add-standard-streamlit-pages#3f13b27b1c1feff1075a086563ad51cda724c0f7" }
 dependencies = [
     { name = "httpx" },
     { name = "huggingface-hub" },
@@ -524,9 +524,7 @@ dependencies = [
     { name = "huggingface-hub" },
     { name = "pydantic" },
     { name = "pydantic-ai" },
-    { name = "smolagents" },
     { name = "streamlit" },
-    { name = "streamlit-code-editor" },
 ]
 
 [package.dev-dependencies]
@@ -559,9 +557,7 @@ requires-dist = [
     { name = "huggingface-hub", specifier = ">=0.29.3" },
     { name = "pydantic", specifier = ">=2.10.6" },
     { name = "pydantic-ai", specifier = ">=0.0.42" },
-    { name = "smolagents", specifier = ">=1.11.0" },
     { name = "streamlit", specifier = ">=1.43.2" },
-    { name = "streamlit-code-editor", specifier = ">=0.1.22" },
 ]
 
 [package.metadata.requires-dev]
