@@ -5,7 +5,7 @@ requires-python = ">=3.12"
 [[package]]
 name = "aic-core"
 version = "0.0.1"
-source = { git = "https://github.com/ShaojieJiang/aic-core?branch=feature%2FAIC-89-add-standard-streamlit-pages#f17f77a91de6d35d87c8b9f3f486d800b8dd7f0c" }
+source = { git = "https://github.com/ShaojieJiang/aic-core?branch=feature%2FAIC-89-add-standard-streamlit-pages#39660e18292b5949f4d836167668589ae1fba8c3" }
 dependencies = [
     { name = "httpx" },
     { name = "huggingface-hub" },

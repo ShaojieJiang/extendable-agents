@@ -5,30 +5,13 @@ import streamlit as st
 from aic_core.agent.agent import AgentConfig
 from aic_core.agent.agent import AgentFactory
 from aic_core.streamlit.agent_page import AgentPage
-from aic_core.streamlit.page import app_state
+from aic_core.streamlit.agent_page import PageState
 from pydantic_ai import Agent
-from pydantic_ai.messages import ModelMessage
 from extendable_agents.constants import HF_REPO_ID
-
-
-@app_state(__file__)
-class PageState:
-    """Page state."""
-
-    chat_history: list[ModelMessage] = []
 
 
 class ChatbotPage(AgentPage):
     """Chatbot page."""
-
-    def __init__(self, repo_id: str, page_title: str) -> None:
-        """Initialize the page."""
-        super().__init__(repo_id, page_title)
-        self.app_state = PageState()
-        self.repo_id = repo_id
-        self.page_title = page_title
-        self.user_role = "user"
-        self.assistant_role = "assistant"
 
     def get_agent(self, agent_name: str) -> Agent:
         """Get agent."""
@@ -43,4 +26,4 @@ class ChatbotPage(AgentPage):
         return agent
 
 
-ChatbotPage(HF_REPO_ID, "Extendable Agents").run()
+ChatbotPage(HF_REPO_ID, PageState(), "Extendable Agents").run()
