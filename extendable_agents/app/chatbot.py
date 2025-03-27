@@ -23,7 +23,7 @@ class ChatbotPage(AgentPage):
 
     def __init__(self, repo_id: str, page_title: str) -> None:
         """Initialize the page."""
-        super().__init__()
+        super().__init__(repo_id, page_title)
         self.app_state = PageState()
         self.repo_id = repo_id
         self.page_title = page_title
