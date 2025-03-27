@@ -5,6 +5,8 @@ import streamlit as st
 from aic_core.agent.agent import AgentConfig
 from aic_core.agent.agent import AgentFactory
 from aic_core.streamlit.agent_page import AgentPage
+from aic_core.streamlit.agent_page import PageState
+from aic_core.streamlit.page import app_state_registry
 from pydantic_ai import Agent
 from extendable_agents.constants import HF_REPO_ID
 
@@ -25,4 +27,5 @@ class ChatbotPage(AgentPage):
         return agent
 
 
-ChatbotPage(HF_REPO_ID, __file__, "Extendable Agents").run()
+page_state = app_state_registry(PageState, __file__)
+ChatbotPage(HF_REPO_ID, page_state, "Extendable Agents").run()
