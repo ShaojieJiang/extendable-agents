@@ -6,9 +6,17 @@ from aic_core.agent.agent import AgentConfig
 from aic_core.agent.agent import AgentFactory
 from aic_core.streamlit.agent_page import AgentPage
 from aic_core.streamlit.agent_page import PageState
-from aic_core.streamlit.page import app_state_registry
+from aic_core.streamlit.page import app_state
 from pydantic_ai import Agent
+from pydantic_ai.messages import ModelMessage
 from extendable_agents.constants import HF_REPO_ID
+
+
+@app_state(__file__)
+class ChatbotState(PageState):
+    """Chatbot state."""
+
+    chat_history: list[ModelMessage] = []
 
 
 class ChatbotPage(AgentPage):
@@ -27,5 +35,4 @@ class ChatbotPage(AgentPage):
         return agent
 
 
-page_state = app_state_registry(PageState, __file__)
-ChatbotPage(HF_REPO_ID, page_state, "Extendable Agents").run()
+ChatbotPage(HF_REPO_ID, ChatbotState(), "Extendable Agents").run()
