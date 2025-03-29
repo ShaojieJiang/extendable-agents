@@ -7,7 +7,7 @@ from dataclasses import field
 from aic_core.agent.agent import AgentConfig
 from aic_core.agent.agent import AgentFactory
 from aic_core.mcp.feedly.server import get_feedly_news
-from aic_core.mcp.feedly.server import mark_as_read
+from aic_core.mcp.feedly.server import read_uninteresting
 from pydantic import BaseModel
 from pydantic import Field
 from pydantic_ai import Agent
@@ -120,7 +120,7 @@ class MarkNews(BaseNode[FeedlyStateWithTokens]):
             ctx.state.ids, ctx.state.uninteresting, strict=True
         ):
             if uninteresting:
-                mark_as_read(id, ctx.state.feedly_token)
+                read_uninteresting(id, ctx.state.feedly_token)
         result = asdict(ctx.state)
         result.pop("feedly_token")
         result.pop("openai_api_key")
