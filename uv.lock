@@ -5,7 +5,7 @@ requires-python = ">=3.12"
 [[package]]
 name = "aic-core"
 version = "0.0.1"
-source = { git = "https://github.com/ShaojieJiang/aic-core?branch=feature%2Fadd-feedly-mcp#208bec166195916d3ca1b5512c4493b8545fb2f7" }
+source = { git = "https://github.com/ShaojieJiang/aic-core?branch=feature%2Fadd-feedly-mcp#fdc0ec5d4cfc2de87b731308a044a6ddbd53d2f8" }
 dependencies = [
     { name = "feedly-client" },
     { name = "httpx" },
