@@ -40,7 +40,12 @@ class FeedlyFilterPage(AICPage):
         openai_api_key = st.sidebar.text_input(
             "OpenAI API Key", type="password", value=os.getenv("OPENAI_API_KEY", "")
         )
-        st.write("Get your feedly token from https://feedly.com/i/console")
+        st.write(
+            "This tool reads news titles from your selected category and marks "
+            "the uninteresting ones as read. It's recommended to first "
+            "customise the prompt in the `FeedlyPrompt` on the `Custom Agent` "
+            "page. Get your feedly token from https://feedly.com/i/console"
+        )
         feedly_token = st.text_input("Feedly Token", type="password")
         news_category = st.text_input("News Category", value="AI")
         max_count = st.number_input("Max Count", min_value=1, max_value=500, value=10)
