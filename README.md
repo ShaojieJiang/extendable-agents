@@ -12,10 +12,9 @@ An Agentic platform that allows you to define extensions.
 ## Showcase
 
 
-https://github.com/user-attachments/assets/7da6fba1-c888-478d-8d38-e7e6e15e1a78
+[![Demo Video](https://img.youtube.com/vi/kHmoi57q-R4/0.jpg)](https://www.youtube.com/watch?v=kHmoi57q-R4)
 
-
-Your uploaded tools are hosted at https://github.com/AI-Colleagues/tools-hub
+https://www.youtube.com/watch?v=kHmoi57q-R4
 
 ## Installation
 
