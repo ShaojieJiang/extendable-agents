@@ -29,7 +29,6 @@ authors = [{name = "Shaojie Jiang", email = "shaojie.jiang1@gmail.com"}]
 dependencies = [
   "aic-core",
   "dotenv>=0.9.9",
-  "feedly-client",
   "httpx>=0.28.1",
   "huggingface-hub>=0.29.3",
   "pydantic>=2.10.6",
@@ -113,5 +112,4 @@ max-complexity = 10
 convention = "google"
 
 [tool.uv.sources]
-aic-core = {git = "https://github.com/ShaojieJiang/aic-core"}
-feedly-client = {git = "https://github.com/feedly/python-api-client"}
+aic-core = {git = "https://github.com/ShaojieJiang/aic-core", branch = "feature/add-feedly-mcp"}

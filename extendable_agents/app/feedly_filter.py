@@ -20,7 +20,9 @@ class FeedlyFilterPage(AICPage):
         state = FeedlyStateWithTokens(
             feedly_token=feedly_token, openai_api_key=openai_api_key
         )
-        feedly_graph = Graph(nodes=[GetNews, LabelNews, MarkNews])
+        feedly_graph = Graph[FeedlyStateWithTokens](
+            nodes=[GetNews, LabelNews, MarkNews]
+        )
         result = feedly_graph.run_sync(
             GetNews(
                 max_count=max_count,
@@ -28,6 +30,8 @@ class FeedlyFilterPage(AICPage):
             ),
             state=state,
         )
+        if result.output is None:
+            return {}
         return result.output
 
     def run(self) -> None:
@@ -39,7 +43,7 @@ class FeedlyFilterPage(AICPage):
         st.write("Get your feedly token from https://feedly.com/i/console")
         feedly_token = st.text_input("Feedly Token", type="password")
         news_category = st.text_input("News Category", value="AI")
-        max_count = st.number_input("Max Count", min_value=1, max_value=100, value=10)
+        max_count = st.number_input("Max Count", min_value=1, max_value=500, value=10)
         if st.button("Filter"):
             if feedly_token and news_category:
                 result = self.filter_news(
