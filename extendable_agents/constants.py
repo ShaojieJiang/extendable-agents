@@ -6,6 +6,7 @@ import streamlit as st
 
 PAGES = [
     st.Page("extendable_agents/app/chatbot.py", title="Chatbot", icon="🤖"),
+    st.Page("extendable_agents/app/feedly_filter.py", title="Feedly Filter", icon="📰"),
     st.Page("extendable_agents/app/agent.py", title="Custom Agent", icon="⚙️"),
     st.Page("extendable_agents/app/extension.py", title="Custom Extention", icon="🧩"),
 ]
