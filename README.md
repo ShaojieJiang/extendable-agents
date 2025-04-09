@@ -12,7 +12,7 @@ An Agentic platform that allows you to define extensions.
 ## Showcase
 
 
-[![Demo Video](https://img.youtube.com/vi/kHmoi57q-R4/0.jpg)](https://www.youtube.com/watch?v=kHmoi57q-R4)
+[![Demo Video](https://img.youtube.com/vi/pxgwcL3Pqro/0.jpg)](https://www.youtube.com/watch?v=pxgwcL3Pqro)
 
 https://www.youtube.com/watch?v=kHmoi57q-R4
 
