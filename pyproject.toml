@@ -112,4 +112,4 @@ max-complexity = 10
 convention = "google"
 
 [tool.uv.sources]
-aic-core = {git = "https://github.com/ShaojieJiang/aic-core"}
+aic-core = {git = "https://github.com/ShaojieJiang/aic-core", branch = "feature/AIC-92-streamlit-mcp"}
