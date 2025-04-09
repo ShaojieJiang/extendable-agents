@@ -1,22 +1,13 @@
 """Pydantic Graph for filtering news from Feedly."""
 
 from __future__ import annotations
-from dataclasses import asdict
-from dataclasses import dataclass
-from dataclasses import field
-from aic_core.agent.agent import AgentConfig
-from aic_core.agent.agent import AgentFactory
-from aic_core.mcp.feedly.server import get_feedly_news
-from aic_core.mcp.feedly.server import read_uninteresting
-from pydantic import BaseModel
-from pydantic import Field
+from dataclasses import asdict, dataclass, field
+from aic_core.agent.agent import AgentConfig, AgentFactory
+from aic_core.mcp.feedly.server import get_feedly_news, read_uninteresting
+from pydantic import BaseModel, Field
 from pydantic_ai import Agent
-from pydantic_ai.messages import ModelMessage
-from pydantic_ai.messages import ModelResponse
-from pydantic_ai.messages import ToolCallPart
-from pydantic_graph import BaseNode
-from pydantic_graph import End
-from pydantic_graph import GraphRunContext
+from pydantic_ai.messages import ModelMessage, ModelResponse, ToolCallPart
+from pydantic_graph import BaseNode, End, GraphRunContext
 from extendable_agents.constants import HF_REPO_ID
 
 

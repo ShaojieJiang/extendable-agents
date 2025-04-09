@@ -2,10 +2,8 @@
 
 import os
 import streamlit as st
-from aic_core.agent.agent import AgentConfig
-from aic_core.agent.agent import AgentFactory
-from aic_core.streamlit.agent_page import AgentPage
-from aic_core.streamlit.agent_page import PageState
+from aic_core.agent.agent import AgentConfig, AgentFactory
+from aic_core.streamlit.agent_page import AgentPage, PageState
 from aic_core.streamlit.page import app_state
 from pydantic_ai import Agent
 from pydantic_ai.messages import ModelMessage
