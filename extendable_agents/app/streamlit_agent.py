@@ -1,10 +1,10 @@
 """Chatbot page."""
 
-import json
 import os
 from typing import Any
 import streamlit as st
 from aic_core.agent.agent import AgentConfig, AgentFactory
+from aic_core.agent.result_types import ComponentRegistry, StreamlitComponent
 from aic_core.streamlit.agent_page import AgentPage, PageState
 from aic_core.streamlit.page import app_state
 from pydantic_ai import Agent
@@ -13,7 +13,7 @@ from pydantic_ai.messages import (
     ModelRequestPart,
     ModelResponsePart,
     TextPart,
-    ToolReturnPart,
+    ToolCallPart,
     UserPromptPart,
 )
 from extendable_agents.constants import HF_REPO_ID
@@ -41,11 +41,11 @@ class ChatbotPage(AgentPage):
 
         return agent
 
-    def extract_tool_return_dict(self, part: ToolReturnPart) -> dict:
-        """Extract tool return dict."""
-        return json.loads(
-            part.model_response_object()["return_value"]["content"][0]["text"]
-        )
+    def extract_tool_call_dict(self, part: ToolCallPart) -> StreamlitComponent:
+        """Extract tool call dict."""
+        model_name = part.tool_name.replace("final_result_", "")
+        model = ComponentRegistry.get_component_class(model_name)
+        return model.model_validate(part.args_as_dict())
 
     def to_simple_messages(
         self, msg_parts: list[ModelRequestPart] | list[ModelResponsePart]
@@ -58,9 +58,9 @@ class ChatbotPage(AgentPage):
                     result.append((self.assistant_role, part.content))
                 case UserPromptPart():
                     result.append((self.user_role, part.content))  # type: ignore
-                case ToolReturnPart():
+                case ToolCallPart():
                     result.append(
-                        (self.assistant_role, self.extract_tool_return_dict(part))
+                        (self.assistant_role, self.extract_tool_call_dict(part))
                     )
                 case _:  # pragma: no cover
                     pass
@@ -71,14 +71,12 @@ class ChatbotPage(AgentPage):
         for msg in self.page_state.chat_history:
             simp_msgs = self.to_simple_messages(msg.parts)
             for simp_msg in simp_msgs:
-                if isinstance(simp_msg[1], dict):
+                if isinstance(simp_msg[1], StreamlitComponent):
                     try:
                         with st.chat_message(simp_msg[0]):
-                            comp_json = simp_msg[1]
-                            comp_type = comp_json["type"]
-                            comp_func = getattr(st, comp_type)
-                            comp_func(**comp_json["kwargs"])
-                    except Exception:  # pragma: no cover
+                            ComponentRegistry.generate_st_component(simp_msg[1])
+                    except Exception as e:  # pragma: no cover
+                        print(e)
                         st.chat_message(simp_msg[0]).write(simp_msg[1])
                 else:
                     st.chat_message(simp_msg[0]).write(simp_msg[1])
