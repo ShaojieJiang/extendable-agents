@@ -4,10 +4,12 @@ import os
 import streamlit as st
 from aic_core.streamlit.page import AICPage
 from pydantic_graph import Graph
-from extendable_agents.graph.feedly_filter import FeedlyStateWithTokens
-from extendable_agents.graph.feedly_filter import GetNews
-from extendable_agents.graph.feedly_filter import LabelNews
-from extendable_agents.graph.feedly_filter import MarkNews
+from extendable_agents.graph.feedly_filter import (
+    FeedlyStateWithTokens,
+    GetNews,
+    LabelNews,
+    MarkNews,
+)
 
 
 class FeedlyFilterPage(AICPage):

@@ -32,7 +32,6 @@ dependencies = [
   "httpx>=0.28.1",
   "huggingface-hub>=0.29.3",
   "pydantic>=2.10.6",
-  "pydantic-ai>=0.0.42",
   "streamlit>=1.44.0"
 ]
 description = "An Agentic platform that allows you to define extensions"
@@ -97,7 +96,6 @@ select = [
 ]
 
 [tool.ruff.lint.isort]
-force-single-line = true
 known-first-party = ["extendable_agents"]
 lines-after-imports = 2
 no-lines-before = ["future", "standard-library", "third-party", "first-party", "local-folder"]

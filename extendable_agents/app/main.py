@@ -2,8 +2,7 @@
 
 import streamlit as st
 from aic_core.agent.agent_hub import AgentHub
-from extendable_agents.constants import HF_REPO_ID
-from extendable_agents.constants import PAGES
+from extendable_agents.constants import HF_REPO_ID, PAGES
 from extendable_agents.logging import get_logger
 
 
