@@ -4,8 +4,8 @@ requires-python = ">=3.12"
 
 [[package]]
 name = "aic-core"
-version = "0.0.2"
-source = { git = "https://github.com/ShaojieJiang/aic-core?branch=feature%2FAIC-92-streamlit-models#02a4f3f3b78c223b9268622d593c702b4e155732" }
+version = "0.0.3"
+source = { git = "https://github.com/ShaojieJiang/aic-core#f555cd0175d207ffd49d05dd50311931e6883250" }
 dependencies = [
     { name = "feedly-client" },
     { name = "httpx" },
@@ -562,7 +562,7 @@ docs = [
 
 [package.metadata]
 requires-dist = [
-    { name = "aic-core", git = "https://github.com/ShaojieJiang/aic-core?branch=feature%2FAIC-92-streamlit-models" },
+    { name = "aic-core", git = "https://github.com/ShaojieJiang/aic-core" },
     { name = "dotenv", specifier = ">=0.9.9" },
     { name = "httpx", specifier = ">=0.28.1" },
     { name = "huggingface-hub", specifier = ">=0.29.3" },
