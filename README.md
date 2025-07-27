@@ -14,7 +14,7 @@ An Agentic platform that allows you to define extensions.
 
 [![Demo Video](https://img.youtube.com/vi/tAtOordZDtk/0.jpg)](https://www.youtube.com/watch?v=tAtOordZDtk)
 
-https://www.youtube.com/watch?v=kHmoi57q-R4
+[https://www.youtube.com/watch?v=kHmoi57q-R4](https://www.youtube.com/watch?v=tAtOordZDtk)
 
 ## Installation
 
